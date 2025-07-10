@@ -7,7 +7,15 @@ export default defineNuxtConfig({
   vite: {
     plugins: [
       tailwindcss(),
+      require('vite-svg-loader')()
     ],
   },
   css: ['~/assets/css/main.css'],
+  app: {
+    head: {
+        htmlAttrs: { dir: 'rtl', lang: 'fa' },
+        link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+
+    },
+  },
 })
