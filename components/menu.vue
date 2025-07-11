@@ -20,8 +20,6 @@
         </a>
       </div>
 
-      
-      
       <PopoverGroup class="hidden lg:flex lg:gap-x-12">
         <Popover class="relative">
           <PopoverButton class="flex items-center gap-x-1 text-sm/6 font-semibold cursor-pointer text-gray-900">
@@ -76,40 +74,75 @@
         </a>
       </div>
     </nav>
-    <Dialog class="lg:hidden" @close="mobileMenuOpen = false" :open="mobileMenuOpen">
-      <div class="fixed inset-0 z-50t" />
-      <DialogPanel class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10   transition-all duration-10000 ease-in-out">
-        <div class="flex items-center justify-between">
-          <a href="#" class="-m-1.5 p-1.5">
-            <span class="sr-only">ریماس اکسسوری</span>
-            <img class="h-8 w-auto" src="../public/images/Logo2.png" alt="" />
-          </a>
-          <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700" @click="mobileMenuOpen = false">
-            <span class="sr-only">بستن منو</span>
-            <XMarkIcon class="size-6" aria-hidden="true" />
-          </button>
-        </div>
-        <div class="mt-6 flow-root">
-          <div class="-my-6 divide-y divide-gray-500/10">
-            <div class="space-y-2 py-6">
-              <Disclosure as="div" class="-mx-3" v-slot="{ open }">
-                <DisclosureButton class="flex w-full items-center justify-between rounded-lg py-2 pr-3.5 pl-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
-                  دسته بندی ها
-                  <ChevronDownIcon :class="[open ? 'rotate-180' : '', 'size-5 flex-none']" aria-hidden="true" />
-                </DisclosureButton>
-                <DisclosurePanel class="mt-2 space-y-2">
-                  <DisclosureButton v-for="item in [...categories]" :key="item.name" as="a" :href="item.href" class="block rounded-lg py-2 pr-3 pl-6 text-sm/7 font-semibold text-gray-900 hover:bg-gray-50">{{ item.name }}</DisclosureButton>
-                </DisclosurePanel>
-              </Disclosure>
-              <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">وبلاگ</a>
-              <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">پیشنهادات</a>
-              <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">درباره ما</a>
-              <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">تماس با ما</a>
+
+      
+    <TransitionRoot appear :show="mobileMenuOpen" as="template">
+      <Dialog as="div" class="lg:hidden" @close="mobileMenuOpen = false" :open="mobileMenuOpen">
+      <TransitionChild
+        as="template"
+        enter="duration-300 ease-out"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="duration-200 ease-in"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
+      >
+        <div class="fixed inset-0 z-50 bg-black/25" />
+        </TransitionChild>
+
+        <TransitionChild
+            as="template"
+            enter="duration-300 ease-out"
+            enter-from="-right-100"
+            enter-to="right-0"
+            leave="duration-200 ease-in"
+            leave-from="right-0"
+            leave-to="-right-100"
+          >
+        <DialogPanel class="fixed inset-y-0 -right-100 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+          <div class="flex items-center justify-between">
+            <a href="#" class="-m-1.5 p-1.5">
+              <span class="sr-only">ریماس اکسسوری</span>
+              <img class="h-8 w-auto" src="../public/images/Logo2.png" alt="" />
+            </a>
+            <button type="button" class=" cursor-pointer -m-2.5 rounded-md p-2.5 text-gray-700" @click="mobileMenuOpen = false">
+              <span class="sr-only">بستن منو</span>
+              <XMarkIcon class="size-6" aria-hidden="true" />
+            </button>
+          </div>
+          <div class="mt-6 flow-root">
+            <div class="-my-6 divide-y divide-gray-500/10">
+              <div class="space-y-2 py-6">
+              
+                <Disclosure as="div" class="-mx-3" v-slot="{ open }">
+                  <DisclosureButton class="flex w-full items-center justify-between rounded-lg py-2 pr-3.5 pl-3 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
+                    دسته بندی ها
+                    <ChevronDownIcon :class="[open ? 'rotate-180' : '', 'size-5 flex-none']" aria-hidden="true" />
+                  </DisclosureButton>
+                <transition
+                      enter-active-class="transition duration-100 ease-out"
+                      enter-from-class="transform scale-95 opacity-0"
+                      enter-to-class="transform scale-100 opacity-100"
+                      leave-active-class="transition duration-75 ease-out"
+                      leave-from-class="transform scale-100 opacity-100"
+                      leave-to-class="transform scale-95 opacity-0">
+                    <DisclosurePanel class="mt-2 space-y-2">
+                      <DisclosureButton v-for="item in [...categories]" :key="item.name" as="a" :href="item.href" class="block rounded-lg py-2 pr-3 pl-6 text-sm/7 font-semibold text-gray-900 hover:bg-gray-50">{{ item.name }}</DisclosureButton>
+                    </DisclosurePanel>
+                </transition>
+                </Disclosure>
+                <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">وبلاگ</a>
+                <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">پیشنهادات</a>
+                <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">درباره ما</a>
+                <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">تماس با ما</a>
+              </div>
             </div>
           </div>
-        </div>
-      </DialogPanel>
-    </Dialog>
+        </DialogPanel>
+        </TransitionChild>
+      </Dialog>
+    </TransitionRoot>
+      
   </header>
 </template>
 
@@ -125,6 +158,8 @@ import {
   PopoverButton,
   PopoverGroup,
   PopoverPanel,
+  TransitionRoot,
+  TransitionChild
 } from '@headlessui/vue'
 import {
   Bars3Icon,
@@ -152,4 +187,16 @@ const categories = [
 ]
 
 const mobileMenuOpen = ref(false)
+
+
+
+
+const isOpen = ref(true)
+
+function closeModal() {
+  isOpen.value = false
+}
+function openModal() {
+  isOpen.value = true
+}
 </script>
