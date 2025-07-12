@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "title": "گردنبند نقره با نگین آبی",
+    "price": 450000,
+    "features": ["جنس نقره", "نگین آبی", "طراحی مدرن"],
+    "category": "گردبند",
+    "image": "https://palimo.ir/wp-content/uploads/2024/07/N2137-3.webp",
+    "rate": 4.5
+  },
+  {
+    "id": 2,
+    "title": "دستبند چرمی مردانه",
+    "price": 320000,
+    "features": ["جنس چرم طبیعی", "قفل فلزی", "مناسب روزمره"],
+    "category": "دستبند",
+    "image": "https://zimbostore.com/wp-content/uploads/2021/03/dastband-charm-zoj.jpg",
+    "rate": 4.2
+  },
+  {
+    "id": 3,
+    "title": "پابند طلا زنانه",
+    "price": 980000,
+    "features": ["طلا 18 عیار", "طراحی ظریف", "وزن سبک"],
+    "category": "پابند",
+    "image": "https://ri3.gallery/wp-content/uploads/2021/04/womens-gold-anklet-manica-1.jpg",
+    "rate": 4.7
+  },
+  {
+    "id": 4,
+    "title": "گوشواره مرواریدی کلاسیک",
+    "price": 620000,
+    "features": ["مروارید طبیعی", "قفل سوزنی", "سبک کلاسیک"],
+    "category": "گوشواره",
+    "image": "https://myshinegallery.com/wp-content/uploads/2022/10/3FDB7004-0F30-40AD-BED7-A4A4180CD3C0.jpeg",
+    "rate": 4.3
+  },
+  {
+    "id": 5,
+    "title": "گردنبند طرح قلب",
+    "price": 390000,
+    "features": ["جنس استیل", "ضد حساسیت", "رنگ رزگلد"],
+    "category": "گردبند",
+    "image": "https://rodgol.com/wp-content/uploads/2023/11/%DA%AF%D8%B1%D8%AF%D9%86%D8%A8%D9%86%D8%AF-%D8%B2%D9%86%D8%A7%D9%86%D9%87-%D8%B7%D8%B1%D8%AD-%D9%82%D9%84%D8%A8-%D9%82%D8%A7%D8%A8%D9%84-%D8%A8%D8%A7%D8%B2-%D8%B4%D8%AF%D9%86-%D9%85%D8%A7%D8%B1%DA%A9-%DA%98%D9%88%D9%BE%DB%8C%D9%86%DA%AF-%D8%A8%D9%87-%D9%87%D9%85%D8%B1%D8%A7%D9%87-%D8%B2%D9%86%D8%AC%DB%8C%D8%B1-357.jpg",
+    "rate": 4.6
+  },
+  {
+    "id": 6,
+    "title": "دستبند سنگی زنانه",
+    "price": 280000,
+    "features": ["سنگ طبیعی", "کش قابل تنظیم", "مناسب همه سایزها"],
+    "category": "دستبند",
+    "image": "https://www.parnoun.com/1364-superlarge_default_2x/mehrovafa.jpg",
+    "rate": 4.4
+  },
+  {
+    "id": 7,
+    "title": "پابند نقره طرح ستاره",
+    "price": 500000,
+    "features": ["نقره 925", "طرح ستاره", "بند قابل تنظیم"],
+    "category": "پابند",
+    "image": "https://javaherbaran.com/wp-content/uploads/2024/01/132149-1.jpg",
+    "rate": 4.0
+  },
+  {
+    "id": 8,
+    "title": "گوشواره حلقه‌ای زنانه",
+    "price": 360000,
+    "features": ["استیل ضد زنگ", "سبک روزمره", "رنگ طلایی"],
+    "category": "گوشواره",
+    "image": "https://rozalinstore.com/wp-content/uploads/2023/01/%DA%AF%D9%88%D8%B4%D9%88%D8%A7%D8%B1%D9%87-%D8%B2%D9%86%D8%A7%D9%86%D9%87-%D8%AD%D9%84%D9%82%D9%87-%D8%A7%DB%8C-%DA%98%D9%88%D9%BE%DB%8C%D9%86%DA%AF-%D8%B7%D8%B1%D8%AD-%D8%B7%D9%84%D8%A7-%DA%A9%D8%AF-RS-138-2.jpg",
+    "rate": 4.1
+  },
+  {
+    "id": 9,
+    "title": "گردنبند ماه تولد",
+    "price": 420000,
+    "features": ["طرح ماه تولد", "سنگ ماه", "زنجیر قابل تنظیم"],
+    "category": "گردبند",
+    "image": "https://dorsazivar.ir/wp-content/uploads/2022/10/dey-700x700.jpeg",
+    "rate": 4.8
+  },
+  {
+    "id": 10,
+    "title": "دستبند زوج‌ها",
+    "price": 550000,
+    "features": ["ست زنانه و مردانه", "طراحی عاشقانه", "قفل مغناطیسی"],
+    "category": "دستبند",
+    "image": "https://statics.basalam.com/public-7/users/aVq0xO/02-06/hrHx06KucSyXjDeRpWt3gEZDb7AlNy8HUg06GIQGyZmfSD1COh.jpg",
+    "rate": 4.9
+  }
+]
