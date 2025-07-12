@@ -3,5 +3,7 @@
 </script>
 
 <template>
-    <Menu />
+    <HeaderMenu />
+
+    <Footer />
 </template>

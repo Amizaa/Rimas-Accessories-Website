@@ -1,9 +1,54 @@
+<script setup>
+import Logo from '@/public/images/Logo2.png'
+
+
+import {
+  Dialog,
+  DialogPanel,
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Popover,
+  PopoverButton,
+  PopoverGroup,
+  PopoverPanel,
+  TransitionRoot,
+  TransitionChild
+} from '@headlessui/vue'
+import {
+  Bars3Icon,
+  XMarkIcon,
+} from '@heroicons/vue/24/outline'
+import { ChevronDownIcon} from '@heroicons/vue/20/solid'
+
+import Ankle from '~/assets/images/ankle.svg'
+import Bracelet from '~/assets/images/bracelet.svg'
+import Earrings from '~/assets/images/earrings.svg'
+import Jewerly from '~/assets/images/jewelry.svg'
+import Necklace from '~/assets/images/necklace.svg'
+import Heart from '~/assets/images/heart.svg'
+import ShoppingCart from '~/assets/images/shopping_cart.svg'
+import SearchBar from './searchBar.vue'
+
+
+const categories = [
+  { name: 'گوشواره', description: 'Get a better understanding of your traffic', href: '#', icon: Earrings },
+  { name: 'گردنبند', description: 'Speak directly to your customers', href: '#', icon: Necklace },
+  { name: 'دستبند', description: 'Your customers’ data will be safe and secure', href: '#', icon: Bracelet },
+  { name: 'پابند', description: 'Connect with third-party tools', href: '#', icon: Ankle },
+  { name: 'ست', description: 'Build strategic funnels that will convert', href: '#', icon: Jewerly },
+
+]
+
+const mobileMenuOpen = ref(false)
+</script>
+
 <template>
   <header class="bg-white sticky top-0 shadow">
     <div class="flex lg:hidden w-full justify-center my-4">
       <a href="/" class="-m-1.5 p-1.5">
         <span class="sr-only">ریماس اکسسوری</span>
-        <img class="h-14 w-auto" src="../public/images/Logo2.png" alt="لوگوی ریماس اکسسوری" />
+        <img class="h-14 w-auto" :src='Logo' alt="لوگوی ریماس اکسسوری" />
       </a>
       <div class="flex lg:hidden absolute right-6">
         <button type="button" class="  my-auto h-1/2 cursor-pointer -m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700" @click="mobileMenuOpen = true">
@@ -16,7 +61,7 @@
       <div class="hidden lg:flex-1 lg:flex">
         <a href="/" class="-m-1.5 p-1.5">
           <span class="sr-only">ریماس اکسسوری</span>
-          <img class="h-10 w-auto" src="../public/images/Logo2.png" alt="لوگوی ریماس اکسسوری" />
+          <img class="h-10 w-auto" :src="Logo" alt="لوگوی ریماس اکسسوری" />
         </a>
       </div>
 
@@ -60,7 +105,7 @@
       </PopoverGroup>
 
       <div class="flex flex-3 lg:flex-1 justify-center w-full">
-        <SearchBar/>
+        <HeaderSearchBar/>
       </div>
 
       <div class="flex justify-end space-x-4">
@@ -103,7 +148,7 @@
           <div class="flex items-center justify-between">
             <a href="#" class="-m-1.5 p-1.5">
               <span class="sr-only">ریماس اکسسوری</span>
-              <img class="h-8 w-auto" src="../public/images/Logo2.png" alt="" />
+              <img class="h-8 w-auto" :src="Logo" alt="" />
             </a>
             <button type="button" class=" cursor-pointer -m-2.5 rounded-md p-2.5 text-gray-700" @click="mobileMenuOpen = false">
               <span class="sr-only">بستن منو</span>
@@ -146,57 +191,3 @@
   </header>
 </template>
 
-<script setup>
-import { ref } from 'vue'
-import {
-  Dialog,
-  DialogPanel,
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-  Popover,
-  PopoverButton,
-  PopoverGroup,
-  PopoverPanel,
-  TransitionRoot,
-  TransitionChild
-} from '@headlessui/vue'
-import {
-  Bars3Icon,
-  XMarkIcon,
-} from '@heroicons/vue/24/outline'
-import { ChevronDownIcon} from '@heroicons/vue/20/solid'
-
-import Ankle from '~/assets/images/ankle.svg'
-import Bracelet from '~/assets/images/bracelet.svg'
-import Earrings from '~/assets/images/earrings.svg'
-import Jewerly from '~/assets/images/jewelry.svg'
-import Necklace from '~/assets/images/necklace.svg'
-import Heart from '~/assets/images/heart.svg'
-import ShoppingCart from '~/assets/images/shopping_cart.svg'
-import SearchBar from './searchBar.vue'
-
-
-const categories = [
-  { name: 'گوشواره', description: 'Get a better understanding of your traffic', href: '#', icon: Earrings },
-  { name: 'گردنبند', description: 'Speak directly to your customers', href: '#', icon: Necklace },
-  { name: 'دستبند', description: 'Your customers’ data will be safe and secure', href: '#', icon: Bracelet },
-  { name: 'پابند', description: 'Connect with third-party tools', href: '#', icon: Ankle },
-  { name: 'ست', description: 'Build strategic funnels that will convert', href: '#', icon: Jewerly },
-
-]
-
-const mobileMenuOpen = ref(false)
-
-
-
-
-const isOpen = ref(true)
-
-function closeModal() {
-  isOpen.value = false
-}
-function openModal() {
-  isOpen.value = true
-}
-</script>
