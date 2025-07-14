@@ -10,7 +10,7 @@ import { FaceFrownIcon } from '@heroicons/vue/24/outline';
         <div class="flex items-center justify-center">
             <img :src="whiteLogo" class="w-1/2" alt="لوگوی سفید ریماس اکسسوری">
         </div>
-        <p class="text-gray-400"> خاص ترین و زیباترین اکسسوری هارا از ما بخواهید</p>
+        <p class="text-gray-400 text-center"> خاص ترین و زیباترین اکسسوری هارا از ما بخواهید</p>
         <div class="flex space-x-4 justify-center">
           <a href="#" class="text-gray-400 hover:text-pink-400 transition">
             <span class="sr-only">Instagram</span>

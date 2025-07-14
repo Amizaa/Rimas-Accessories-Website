@@ -32,11 +32,11 @@ import SearchBar from './searchBar.vue'
 
 
 const categories = [
-  { name: 'گوشواره', description: 'Get a better understanding of your traffic', href: '#', icon: Earrings },
-  { name: 'گردنبند', description: 'Speak directly to your customers', href: '#', icon: Necklace },
-  { name: 'دستبند', description: 'Your customers’ data will be safe and secure', href: '#', icon: Bracelet },
-  { name: 'پابند', description: 'Connect with third-party tools', href: '#', icon: Ankle },
-  { name: 'ست', description: 'Build strategic funnels that will convert', href: '#', icon: Jewerly },
+  { name: 'گوشواره', description: 'زیباترین گوشواره ها', href: '#', icon: Earrings },
+  { name: 'گردنبند', description: 'با گردنبد های ما شیک شوید', href: '#', icon: Necklace },
+  { name: 'دستبند', description: 'مناسب دست های ظریف شما', href: '#', icon: Bracelet },
+  { name: 'پابند', description: 'اصیل و زیبا بمانید', href: '#', icon: Ankle },
+  { name: 'ست', description: 'برای پارتنر های عاشق', href: '#', icon: Jewerly },
 
 ]
 
@@ -44,7 +44,7 @@ const mobileMenuOpen = ref(false)
 </script>
 
 <template>
-  <header class="bg-white sticky top-0 shadow">
+  <header class="bg-white sticky top-0 shadow z-50">
     <div class="flex lg:hidden w-full justify-center my-4">
       <a href="/" class="-m-1.5 p-1.5">
         <span class="sr-only">ریماس اکسسوری</span>
