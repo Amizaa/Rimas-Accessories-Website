@@ -7,6 +7,8 @@
 
     <CarouselStyle1 />
 
+    <CarouselStyle2 />
+
     <p class="text-2xl">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti, fugit at nihil quia illo veritatis perspiciatis consectetur! Ullam perferendis esse dolore? Quas cupiditate quod, sit dicta consectetur nemo ad corporis!
     Dignissimos eligendi perferendis totam quisquam dolore dolores, debitis nisi incidunt repudiandae amet itaque at aspernatur impedit modi, reiciendis pariatur mollitia obcaecati? Officia ratione animi harum laudantium, eius cupiditate veritatis distinctio?
     Autem voluptatum at magnam ex, pariatur assumenda quisquam, numquam provident ut debitis cum doloremque perspiciatis ipsum, dolorem architecto totam neque fuga facere placeat error quae voluptate quas sit! Totam, facilis!
