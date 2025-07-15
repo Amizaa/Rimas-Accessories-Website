@@ -7,7 +7,9 @@
 
     <CarouselStyle1 />
 
-    <CarouselStyle2 />
+    <SectionSlider title="محصولات جدید" :items="products"/>
+
+    <SectionSlider title="پرفروش ترین ها" :items="products"/>
 
     <p class="text-2xl">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti, fugit at nihil quia illo veritatis perspiciatis consectetur! Ullam perferendis esse dolore? Quas cupiditate quod, sit dicta consectetur nemo ad corporis!
     Dignissimos eligendi perferendis totam quisquam dolore dolores, debitis nisi incidunt repudiandae amet itaque at aspernatur impedit modi, reiciendis pariatur mollitia obcaecati? Officia ratione animi harum laudantium, eius cupiditate veritatis distinctio?
