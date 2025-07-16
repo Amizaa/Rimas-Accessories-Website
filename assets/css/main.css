@@ -11,3 +11,8 @@
 @utility card-cover{
     background: linear-gradient(180deg,rgba(200, 197, 187, 0) 50%, rgba(65, 65, 65, 0.75) 78%, rgba(32, 32, 32, 1) 100%);
 }
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+}

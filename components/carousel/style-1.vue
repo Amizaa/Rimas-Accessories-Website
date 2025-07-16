@@ -61,7 +61,7 @@ function dotClass(index) {
       </div>
       <!-- Navigation dots -->
     </section>
-    <div class=" absolute right-8 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-50">
+    <div class=" absolute mr-14 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-50">
       <button
         v-for="(_, index) in sectionsData"
         :key="index"
