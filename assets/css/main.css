@@ -5,7 +5,8 @@
 @theme {
   --shadow-tag: 0px 4px 4px 0px rgb(0 0 0 / 0.25);
   --shadow-tag-hover: 0px 4px 4px 2px rgb(0 0 0 / 0.25);
-
+  --font-azarmehr: AzarMehr;
+  --font-azarmehrbold: AzarMehrBold;
 }
 
 @utility card-cover{
@@ -15,4 +16,17 @@
 @utility container {
   margin-inline: auto;
   padding-inline: 2rem;
+}
+
+
+@font-face {
+  font-family: AzarMehr;
+  font-style: normal;
+  src: url("../font/azarmehr/400-AzarMehr-FD-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: AzarMehrBold;
+  font-style: normal;
+  src: url("../font/azarmehr/700-AzarMehr-FD-Bold.woff2") format("woff2");
 }

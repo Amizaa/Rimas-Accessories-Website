@@ -55,7 +55,7 @@ const onChangePrice = () => {
                     <h4 class="">فیلتر قیمت</h4>
                     <USlider color="neutral" :max="2000000" :min="25000" :step="1000" v-model="value" />
 
-                    <div class="flex justify-between gap-2 mb-4">
+                    <div class="flex justify-between gap-2 my-4">
                         <div>
                             <span class="text-sm text-gray-500">حداقل قیمت</span>
                             <UInput v-model="value[0]" />

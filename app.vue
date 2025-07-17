@@ -4,7 +4,7 @@
 </script>
 
 <template>
-  <div>
+  <div class="font-azarmehr">
     <NuxtLayout >
       <NuxtPage />
     </NuxtLayout>
