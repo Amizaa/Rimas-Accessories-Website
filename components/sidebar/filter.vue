@@ -44,7 +44,7 @@ const onChangePrice = () => {
                 <div class="shadow-xl flex flex-col gap-2 rounded-xl p-2">
                     <h3 class="text-center underline underline-offset-12">دسته بندی ها</h3>
     
-                    <NuxtLink v-for="category in categories" :key="category.name" :to="`/category/${category.name}`" class="px-3 py-1 font-semibold hover:bg-green-100 rounded-md">
+                    <NuxtLink v-for="category in categories" :key="category.name" :to="`/category/${category.name}`" class="px-3 py-1 font-semibold hover:bg-indigo-200 rounded-md">
                         {{ category.name }}
                     </NuxtLink>
                 </div>
@@ -65,10 +65,9 @@ const onChangePrice = () => {
                             <UInput v-model="value[1]" />
                         </div>
                     </div>
-                    <button @click="onChangePrice" class=" cursor-pointer p-2 rounded-full bg-zinc-300 text-center hover:bg-zinc-400 text-white">اعمال</button>
+                    <button @click="onChangePrice" class=" cursor-pointer p-2 rounded-full  text-center bg-indigo-400 hover:bg-indigo-500 text-white transition-all duration-300">اعمال</button>
 
                 </div>
-
 
             </div>
     </aside>

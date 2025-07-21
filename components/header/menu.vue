@@ -76,11 +76,11 @@ const mobileMenuOpen = ref(false)
             <PopoverPanel class="absolute left-1/2 z-10 mt-3 w-screen max-w-md -translate-x-1/2 overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
               <div class="p-4">
                 <div v-for="item in categories" :key="item.name" class="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm/6 hover:bg-gray-50">
-                  <div class="flex size-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+                  <!-- <div class="flex size-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
                     <component :is="item.icon" class="size-6 text-gray-600 blue group-hover:fill-indigo-600" aria-hidden="true" />
-                  </div>
-                  <div class="flex-auto">
-                    <a :href="item.href" class="block font-semibold text-gray-900">
+                  </div> -->
+                  <div class="flex-auto hover:text-indigo-600">
+                    <a :href="`/category/${item.name}`" class="block font-semibold text-gray-900 hover:text-indigo-600">
                       {{ item.name }}
                       <span class="absolute inset-0" />
                     </a>
@@ -89,7 +89,7 @@ const mobileMenuOpen = ref(false)
                 </div>
               </div>
               <div class="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
-                <a v-for="item in callsToAction" :key="item.name" :href="item.href" class="flex items-center justify-center gap-x-2.5 p-3 text-sm/6 font-semibold text-gray-900 hover:bg-gray-100">
+                <a v-for="item in callsToAction" :key="item.name" :href="`/category/${item.name}`" class="flex items-center justify-center gap-x-2.5 p-3 text-sm/6 font-semibold text-gray-900 hover:bg-gray-100">
                   <component :is="item.icon" class="size-5 flex-none text-gray-400" aria-hidden="true" />
                   {{ item.name }}
                 </a>
@@ -172,7 +172,7 @@ const mobileMenuOpen = ref(false)
                       leave-from-class="transform scale-100 opacity-100"
                       leave-to-class="transform scale-95 opacity-0">
                     <DisclosurePanel class="mt-2 space-y-2">
-                      <DisclosureButton v-for="item in [...categories]" :key="item.name" as="a" :href="item.href" class="block rounded-lg py-2 pr-3 pl-6 text-sm/7 font-semibold text-gray-900 hover:bg-gray-50">{{ item.name }}</DisclosureButton>
+                      <DisclosureButton v-for="item in [...categories]" :key="item.name" as="a" :href="`/category/${item.name}`" class="block rounded-lg py-2 pr-3 pl-6 text-sm/7 font-semibold text-gray-900 hover:bg-gray-50">{{ item.name }}</DisclosureButton>
                     </DisclosurePanel>
                 </transition>
                 </Disclosure>
