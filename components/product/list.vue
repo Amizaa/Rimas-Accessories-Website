@@ -38,7 +38,7 @@
 
 <template>
   <main class="md:w-2/3 lg:w-3/4 w-full py-1 min-h-screen">
-    <Breadcrumb />
+    <BreadcrumbCategory />
     <h1 class="text-2xl text-center">{{ category }}</h1>
 
     <div v-if="paginatedProducts.length == 0" class="mt-5">

@@ -42,7 +42,7 @@ const onChangePrice = () => {
             <div class="sticky top-22">
 
                 <div class="shadow-xl flex flex-col gap-2 rounded-xl p-2">
-                    <h3 class="text-center underline underline-offset-6">دسته بندی ها</h3>
+                    <h3 class="text-center underline underline-offset-12">دسته بندی ها</h3>
     
                     <NuxtLink v-for="category in categories" :key="category.name" :to="`/category/${category.name}`" class="px-3 py-1 font-semibold hover:bg-green-100 rounded-md">
                         {{ category.name }}
@@ -50,9 +50,9 @@ const onChangePrice = () => {
                 </div>
 
                 <div class="shadow-xl flex flex-col gap-2 rounded-xl p-2 mt-3">
-                    <h3 class="text-center underline underline-offset-6">فیلتر ها</h3>
+                    <h3 class="text-center underline underline-offset-12">فیلتر ها</h3>
 
-                    <h4 class="">فیلتر قیمت</h4>
+                    <h4 class="my-2">فیلتر قیمت</h4>
                     <USlider color="neutral" :max="2000000" :min="25000" :step="1000" v-model="value" />
 
                     <div class="flex justify-between gap-2 my-4">

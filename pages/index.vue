@@ -4,7 +4,7 @@
 </script>
 
 <template>
-    <CarouselStyle1 />
+    <CarouselStyle1 class="w-full mx-0"/>
 
     <SectionSlider title="محصولات جدید" :items="products"/>
 

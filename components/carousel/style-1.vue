@@ -46,7 +46,7 @@ function dotClass(index) {
 </script>
 
 <template>
-  <div ref="containerRef" class="scroll-container mt-4 h-screen overflow-y-auto overflow-x-hidden" @scroll="handleScroll">
+  <div ref="containerRef" class="scroll-container mt-4 h-screen overflow-y-hidden overflow-x-hidden" @scroll="handleScroll">
     <section v-for="(section, index) in sectionsData" :key="index" class="scroll-section relative h-screen flex flex-col md:flex-row">
       <div :class="`w-full md:w-1/2 h-1/2 md:h-full relative overflow-hidden group shine-effect ${index % 2 === 0 ? '' : 'md:order-last'}`">
         <img :src="section.image" class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 group-hover:rotate-1" />
@@ -59,8 +59,8 @@ function dotClass(index) {
           <button class=" cursor-pointer mt-8 px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full text-sm font-medium transition-all duration-300 hover:tracking-wider">مشاهده {{section.title}} ها</button>
         </div>
       </div>
-      <!-- Navigation dots -->
     </section>
+    <!-- Navigation dots -->
     <div class=" absolute mr-14 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-50">
       <button
         v-for="(_, index) in sectionsData"

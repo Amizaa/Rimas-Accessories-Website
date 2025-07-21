@@ -14,4 +14,10 @@ const items = useBreadCrumbs()
 </UBreadcrumb>
 </template>
 
+<style>
+nav[aria-label="breadcrumb"] ol > li:last-of-type .truncate {
+  color: #1c1c1c;
+}
+</style>
+
 
