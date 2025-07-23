@@ -3,6 +3,8 @@
     item: Object,
   })
 
+    import { separatePrice } from 'price-seprator'
+
 </script>
 
 
@@ -17,8 +19,8 @@
                     <p class="text-sm mt-3 text-gray-300">{{item.features.join('، ')}}</p>
                     
                     <div class="text-center inline-block mt-4 space-x-2">
-                        <span class="text-lg">{{ item.price }}</span>
-                        <span class="text-sm text-gray-400 line-through">699,000</span>
+                        <span class="text-lg">{{ separatePrice(item.price) }}</span>
+                        <span class="text-sm text-gray-400 line-through">{{separatePrice(699000)}}</span>
                         <span class=" text-sm text-gray-300">تومان</span>
 
                     </div>

@@ -98,10 +98,10 @@ const mobileMenuOpen = ref(false)
           </transition>
         </Popover>
         
-        <a href="#" class="text-sm/6 font-semibold text-gray-900">وبلاگ</a>
+        <a href="/blog" class="text-sm/6 font-semibold text-gray-900">وبلاگ</a>
         <a href="#" class="text-sm/6 font-semibold text-gray-900">پیشنهادات</a>
-        <a href="#" class="text-sm/6 font-semibold text-gray-900">درباره ما</a>
-        <a href="#" class="text-sm/6 font-semibold text-gray-900">تماس با ما</a>
+        <a href="/about-us" class="text-sm/6 font-semibold text-gray-900">درباره ما</a>
+        <a href="/contact-us" class="text-sm/6 font-semibold text-gray-900">تماس با ما</a>
       </PopoverGroup>
 
       <div class="flex flex-3 lg:flex-1 justify-center w-full">
@@ -176,10 +176,10 @@ const mobileMenuOpen = ref(false)
                     </DisclosurePanel>
                 </transition>
                 </Disclosure>
-                <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">وبلاگ</a>
+                <a href="/blog" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">وبلاگ</a>
                 <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">پیشنهادات</a>
-                <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">درباره ما</a>
-                <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">تماس با ما</a>
+                <a href="/about-us" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">درباره ما</a>
+                <a href="/contact-us" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">تماس با ما</a>
               </div>
             </div>
           </div>

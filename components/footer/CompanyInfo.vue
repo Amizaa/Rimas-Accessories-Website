@@ -1,6 +1,5 @@
 <script setup>
     import whiteLogo from '@/public/images/white-logo.png'
-import { FaceFrownIcon } from '@heroicons/vue/24/outline';
 
     
 </script>

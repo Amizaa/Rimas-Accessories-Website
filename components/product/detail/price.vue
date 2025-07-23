@@ -8,6 +8,9 @@
     const number = ref(1)
 
     const realPrice = (props.price * (100 - props.off)) / 100 
+
+    import { separatePrice } from 'price-seprator'
+
 </script>
 
 <template>
@@ -16,11 +19,11 @@
           <h3 class="text-2xl text-red-700">موجود نیست</h3>
       </div>
       <div v-else-if="off != 0" class="flex justify-center gap-4">
-          <h3 class="text-2xl text-zinc-400 line-through">{{price * number}}</h3>
-          <h3 class="text-2xl text-indigo-800 font-bold">{{realPrice * number}} <span class="text-lg text-indigo-200">تومان</span> </h3>
+          <h3 class="text-2xl text-zinc-400 line-through">{{separatePrice(price * number)}}</h3>
+          <h3 class="text-2xl text-indigo-800 font-bold">{{separatePrice(realPrice * number)}} <span class="text-lg text-indigo-200">تومان</span> </h3>
       </div>
       <div v-else>
-          <h3 class="text-2xl text-indigo-800">{{price * number}} <span class="text-lg text-indigo-200">تومان</span> </h3>
+          <h3 class="text-2xl text-indigo-800">{{separatePrice(price * number)}} <span class="text-lg text-indigo-200">تومان</span> </h3>
       </div>
     </div>
     
