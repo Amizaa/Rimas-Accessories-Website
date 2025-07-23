@@ -1,4 +1,6 @@
 <script setup>
+import { separatePrice } from 'price-seprator'
+
 const categories = [
   { name: 'گوشواره', description: 'زیباترین گوشواره ها' },
   { name: 'گردنبند', description: 'با گردنبد های ما شیک شوید'},
@@ -12,27 +14,34 @@ const route = useRoute()
 const router = useRouter()
 
 const value = ref([25000,2000000])
-
-// const priceRange = computed(() => {
-//     const minPrice = route.query.minPrice;
-//     const maxPrice = route.query.maxPrice;
-    
-//     if(minPrice && maxPrice){
-//         value[0] = minPrice
-//         value[1] = maxPrice
-//         return 0
-//     }
-// })
-
+ 
+const search = route.query.search
 
 const onChangePrice = () => {
     router.push({
       query: {
+        search: search,
         minPrice: value.value[0],
         maxPrice: value.value[1],
       }
     });
 }
+
+const formattedValue = computed({
+  get() {
+    return [
+      separatePrice(value.value[0]),
+      separatePrice(value.value[1])
+    ];
+  },
+  set(newVal) {
+    value.value = [
+      Number(newVal[0].replace(/,/g, '')),
+      Number(newVal[1].replace(/,/g, ''))
+    ];
+  }
+});
+
 
 </script>
 
@@ -57,12 +66,12 @@ const onChangePrice = () => {
 
                     <div class="flex justify-between gap-2 my-4">
                         <div>
-                            <span class="text-sm text-gray-500">حداقل قیمت</span>
-                            <UInput v-model="value[0]" />
+                            <span class="text-sm text-gray-500">حداکثر قیمت</span>
+                            <UInput :value="formattedValue[1]" @input="(e) => formattedValue[1] = e.target.value"/>
                         </div>
                         <div>
-                            <span class="text-sm text-gray-500">حداکثر قیمت</span>
-                            <UInput v-model="value[1]" />
+                            <span class="text-sm text-gray-500">حداقل قیمت</span>
+                            <UInput :value="formattedValue[0]" @input="(e) => formattedValue[0] = e.target.value" />
                         </div>
                     </div>
                     <button @click="onChangePrice" class=" cursor-pointer p-2 rounded-full  text-center bg-indigo-400 hover:bg-indigo-500 text-white transition-all duration-300">اعمال</button>

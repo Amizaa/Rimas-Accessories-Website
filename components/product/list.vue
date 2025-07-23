@@ -1,17 +1,14 @@
 <script setup>
     const { products } = useProducts() // Assume this returns all products
+    const route = useRoute()
+
+    const category = route.params.category == 'all' ? 'همه محصولات' : `دسته بندی ${route.params.category}`
 
     const itemsPerPage = 3
+    const page = ref(1)
 
-    
-    const route = useRoute()
-    const pageNum = computed(() => {
+    const search = route.query.search
 
-        return route.query.page ? parseInt(route.query.page) : 1
-    })
-    
-    const page = ref(pageNum)
-    const category = route.params.category == 'همه محصولات' ? 'همه محصولات' : `دسته بندی ${route.params.category}`
 
     // Slice products based on current page
     const paginatedProducts = computed(() => {
@@ -27,19 +24,13 @@
         return {minPrice,maxPrice}
     })
 
-    function to(page) {
-        return {
-            query: {
-            page,
-            },
-        }
-        }
 </script>
 
 <template>
   <main class="md:w-2/3 lg:w-3/4 w-full py-1 min-h-screen">
     <BreadcrumbCategory />
-    <h1 class="text-2xl text-center">{{ category }}</h1>
+    <h1 class="text-2xl text-center mt-4" v-if="search">نتیجه جست و جو برای <span class=" font-azarmehrbold">{{search}}</span></h1>
+    <h1 class="text-2xl text-center mt-4" v-else>{{ category }}</h1>
 
     <div v-if="paginatedProducts.length == 0" class="mt-5">
         <h1 class="text-xl text-center text-red-900">محصولی برای نمایش وجود ندارد</h1>
@@ -60,7 +51,6 @@
             active-color="neutral"
             show-edges
             show-controls
-            :to="to"
             :sibling-count="1"
           />
       </div>

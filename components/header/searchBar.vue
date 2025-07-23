@@ -1,5 +1,5 @@
 <template>
-        <form action="/search" class="w-full px-4">
+        <form action="/category/all" class="w-full px-4">
             <div class=" focus:outline-2 flex justify-between border rounded-full px-3 items-center">
                 <button type="submit" class=" rounded-full cursor-pointer">
                     <svg class="h-5 w-5 fill-current dark:text-teal-300"
@@ -11,7 +11,7 @@
                         </path>
                     </svg>
                 </button>
-                <input type="text" v-model="searchInput" name="q" class=" focus:outline-none  w-full h-12 px-4 dark:text-gray-800 dark:bg-gray-200" placeholder="جست و جوی محصول">
+                <input type="text" v-model="searchInput" name="search" class=" focus:outline-none  w-full h-12 px-4 dark:text-gray-800 dark:bg-gray-200" placeholder="جست و جوی محصول">
                 <button @click="clearSearch" v-if="searchInput" type="button" class="cursor-pointer w-8 h-8">
                     <x-mark-icon />
                 </button>

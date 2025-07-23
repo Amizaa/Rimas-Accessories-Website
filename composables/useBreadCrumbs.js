@@ -3,6 +3,7 @@ export const useBreadCrumbs = () => {
     const route = useRoute();
     const router = useRouter();
     
+    const search = route.query.search
 
     const fullPath = decodeURIComponent(route.path);
  
@@ -26,12 +27,12 @@ export const useBreadCrumbs = () => {
     if (crumb) {
         path = `${path}/${crumb}`;
         
-        if (crumb == 'همه محصولات') {
+        if (crumb == 'all') {
           return
         }
 
         if (crumb == 'category') {
-          breadcrumbs.push({label: 'همه محصولات', to:'/category/همه محصولات'});
+          breadcrumbs.push({label: 'همه محصولات', to:'/category/all'});
         }else{
 
           breadcrumbs.push({label: crumb, to:path});
@@ -39,6 +40,10 @@ export const useBreadCrumbs = () => {
   
         }
     });
+
+    if (search) {
+      breadcrumbs.push({label: `نتیجه جست و جو برای ${search}`, to:`/category/all?search=${search}`})
+    }
 
 
   return breadcrumbs;
