@@ -1,0 +1,8 @@
+[
+    {
+        "SAVE10": { "discount": 10, "message": "تخفیف 10 درصد اعمال شد" },
+        "FREESHIP": { "discount": 0,"freeShipping": true, "message": "ارسال رایگان اعمال شد" },
+        "WELCOME20": { "discount": 20, "message": "تخفیف 20% اعمال شد" },
+        "FOTHER": { "discount": 25, "message": "تخفیف روز پدر اعمال شد" }
+    }
+]

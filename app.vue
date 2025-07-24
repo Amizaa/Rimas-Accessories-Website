@@ -5,8 +5,10 @@
 
 <template>
   <div class="font-azarmehr">
-    <NuxtLayout >
-      <NuxtPage />
-    </NuxtLayout>
+    <UApp>
+      <NuxtLayout >
+        <NuxtPage />
+      </NuxtLayout>
+    </UApp>
   </div>
 </template>
