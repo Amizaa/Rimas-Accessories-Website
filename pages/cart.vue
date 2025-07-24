@@ -125,7 +125,8 @@ const total = computed(() => {
 </script>
 
 <template>
-<div class="container mx-auto p-4 max-w-6xl">
+  <div class="container mx-auto p-4 max-w-6xl">
+  <Stepper :active="0" class="my-10"/>
     <!-- Header with cart count -->
     <div class="flex justify-between items-center mb-8">
         <h1 class="text-2xl md:text-3xl lg:text-4xl font-azarmehrbold text-gray-800">سبد خرید</h1>
