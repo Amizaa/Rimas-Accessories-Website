@@ -121,7 +121,6 @@ const total = computed(() => {
   return subtotal.value + deliveryCost.value - discount.value
 })
 
-
 </script>
 
 <template>
@@ -296,7 +295,14 @@ const total = computed(() => {
                             </button>
                         </td>
                     </tr>
-                </tbody>
+                    <tr>
+                        <td class=" w-full" colspan="6">
+                          <div class="flex justify-center w-full">
+                            <button class=" rounded-full bg-indigo-400 hover:bg-indigo-500 transition-all cursor-pointer my-5 p-3 text-white">بروزرسانی سبد خرید</button>
+                          </div>
+                        </td>
+                    </tr>
+                  </tbody>
                 </table>
             </div>
         </div>
@@ -336,7 +342,7 @@ const total = computed(() => {
         
         <!-- Order Total -->
         <div class="md:col-span-1">
-          <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 sticky top-4">
+          <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 sticky top-20">
             <h2 class="text-xl font-bold mb-4">خلاصه سفارشات</h2>
             <div class="space-y-3 mb-4">
               <div class="flex justify-between">
@@ -361,6 +367,7 @@ const total = computed(() => {
                 </div>
               </div>
             </div>
+              <NuxtLink to="/checkout">
                 <button 
                 class="w-full cursor-pointer bg-indigo-400 text-white py-3 rounded-lg font-medium hover:bg-indigo-500 transition flex items-center justify-center"
                 :disabled="cartItems.length === 0"
@@ -368,6 +375,7 @@ const total = computed(() => {
                 >
                     ثبت سفارش
                 </button>
+              </NuxtLink>
           </div>
         </div>
       </div>
