@@ -15,10 +15,6 @@ const items = ref([
     icon: 'i-lucide-truck'
   },
   {
-    title: 'نحوه پرداخت',
-    icon: 'i-lucide-wallet'
-  },
-  {
     title: 'پایان خرید',
     icon: 'i-lucide-circle-check'
   }

@@ -109,12 +109,12 @@ const mobileMenuOpen = ref(false)
       </div>
 
       <div class="flex justify-end space-x-4">
-        <a href="#" class="text-sm/6 font-semibold text-gray-900 hover:text-gray-600">ثبت نام / ورود</a>
+        <HeaderLogin />
         <span>|</span>
         <a href="#">
           <Heart class="text-sm/6 size-7 cursor-pointer hover:fill-red-500"/>
         </a>
-        <a href="#">
+        <a href="/cart">
           <ShoppingCart class="text-sm/6 size-7 cursor-pointer hover:fill-blue-600"/>
         </a>
       </div>
