@@ -1,0 +1,83 @@
+<script setup>
+    import orders from '@/api/orders.json'
+    import { separatePrice } from 'price-seprator';
+
+    const route = useRoute()
+
+    const order = orders.orders.find(order => order.orderId === route.params.id) || []
+
+    definePageMeta({
+        layout: 'account'
+    })
+
+    const pictures = [
+    'https://picsum.photos/468/468?random=1',
+    'https://picsum.photos/468/468?random=2',
+    'https://picsum.photos/468/468?random=3',
+    'https://picsum.photos/468/468?random=4',
+    'https://picsum.photos/468/468?random=5',
+    'https://picsum.photos/468/468?random=6'
+    ]
+</script>
+
+<template>
+    <h1 class="text-2xl text-center mt-4 font-azarmehrbold">سفارش {{order.orderId}}</h1>
+
+
+    <div class=" space-y-3 p-2 mt-4 w-full shadow-md rounded-2xl text-sm">
+        <div>
+            <div class="p-2">
+                <h3 class="text-right font-bold text-lg mb-6">اطلاعات سفارش</h3>
+                <ul class=" space-y-2">
+                    <li>کد سفارش: <span class="font-bold">{{order.orderId}}</span></li>
+                    <li>تاریخ سفارش: <span class="font-bold">{{order.orderDate}}</span></li>
+                    <li>وضعیت سفارش: <span class="font-bold">{{order.status == 'delivered' ? 'ارسال شده' : 'در حال بررسی'}}</span></li>
+                </ul>
+            </div>
+            <USeparator class="mt-4 mb-6"/>
+            <div class="p-2">
+                <h3 class="text-right font-bold text-lg mb-6">اطلاعات گیرنده</h3>
+                <ul class=" space-y-2">
+                    <li>نام و نام خانوادگی گیرنده: <span class="font-bold">{{order.shipping.recieverName}}</span></li>
+                    <li>شماره همراه گیرنده: <span class="font-bold">{{order.shipping.recieverPhone}}</span></li>
+                    <li>آدرس گیرنده: <span class="font-bold">{{order.shipping.province}}، {{order.shipping.city}}، {{order.shipping.address}}</span></li>
+                    <li>کد پستی آدرس: <span class="font-bold">{{order.shipping.postCode}}</span></li>
+                </ul>
+            </div>
+            <USeparator class="mt-4 mb-6"/>
+            <div class="p-2">
+                <h3 class="text-right font-bold text-lg mb-6">اطلاعات پرداخت</h3>
+                <ul class=" space-y-2">
+                    <li>جمع کل خرید: <span class="font-bold">{{separatePrice(order.payment.totalAmount)}} تومان</span></li>
+                </ul>
+            </div>
+            <USeparator class="mt-4 mb-6"/>
+            <div class="p-2">
+                <h3 class="text-right font-bold text-lg mb-6">اطلاعات ارسال</h3>
+                <ul class=" space-y-2">
+                    <li>ارسال از طریق: <span class="font-bold">{{order.shipping.shippingMethod}}</span></li>
+                    <li>کد رهگیری: <span class="font-bold">{{order.shipping.trackingCode}}</span></li>
+                </ul>
+            </div>
+            <USeparator class="mt-4 mb-6"/>
+            <div class="p-2">
+                <h3 class="text-right font-bold text-lg mb-6">محصولات سفارش داده شده</h3>
+                <div class=" w-full flex gap-3 overflow-hidden items-center justify-start relative mb-2 border p-3 rounded-2xl"  v-for="item in order.items" :key="item.productId">
+                    <div class="relative w-20 h-20 flex-shrink-0">
+                        <img class="absolute rounded-md left-0 top-0 w-full h-full object-cover object-center transition duration-50" src="/assets/images/blog/bracelet.png">
+                    </div>
+                    <ul>
+                        <li>کد محصول: <span class="font-bold">{{item.productId}}</span></li>
+                        <li>نام محصول: <span class="font-bold">{{item.name}}</span></li>
+                        <li>دسته بندی: <span class="font-bold">{{item.category}}</span></li>
+                        <li>تعداد: <span class="font-bold">{{item.quantity}}</span></li>
+                        <li>قیمت کل: <span class="font-bold">{{separatePrice(item.price)}} تومان</span></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</template>

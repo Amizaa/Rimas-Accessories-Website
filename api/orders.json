@@ -1,0 +1,70 @@
+{
+  "userId": "u45893",
+  "orders": [
+    {
+      "orderId": "o1001",
+      "orderDate": "2024-12-15T14:23:00Z",
+      "status": "delivered",
+      "items": [
+        {
+          "productId": "j001",
+          "name": "دستبند نقره‌ای",
+          "category": "دستبند",
+          "quantity": 1,
+          "price": 240000
+        },
+        {
+          "productId": "a023",
+          "name": "گوشواره طلایی مینیمال",
+          "category": "گوشواره",
+          "quantity": 2,
+          "price": 185000
+        }
+      ],
+      "shipping": {
+        "address": "تهران، خیابان آزادی، پلاک 21",
+        "city": "تهران",
+        "province": "تهران",
+        "postCode": "1234567890",
+        "shippingMethod": "ارسال رایگان",
+        "trackingCode": "TRK-98431",
+        "recieverName": "سمیرا قادری",
+        "recieverPhone": "09121234567"
+      },
+      "payment": {
+        "method": "کارت بانکی",
+        "paid": true,
+        "totalAmount": 610000
+      }
+    },
+    {
+      "orderId": "o1002",
+      "orderDate": "2025-01-07T10:12:00Z",
+      "status": "processing",
+      "items": [
+        {
+          "productId": "n005",
+          "name": "گردنبند رزگلد",
+          "category": "گردنبند",
+          "quantity": 1,
+          "price": 325000
+        }
+      ],
+      "shipping": {
+        "address": "اصفهان، خیابان مشتاق دوم، پلاک 8",
+        "city": "اصفهان",
+        "province": "اصفهان",
+        "postCode": "9876543210",
+        "shippingMethod": "پست پیشتاز",
+        "trackingCode": null,
+        "recieverName": "نوید رستگار",
+        "recieverPhone": "09387654321"
+      },
+      "payment": {
+        "method": "پرداخت در محل",
+        "paid": false,
+        "totalAmount": 325000
+      }
+    }
+  ]
+}

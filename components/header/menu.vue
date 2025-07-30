@@ -17,6 +17,7 @@ import {
 } from '@headlessui/vue'
 import {
   Bars3Icon,
+  UserIcon,
   XMarkIcon,
 } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon} from '@heroicons/vue/20/solid'
@@ -26,7 +27,6 @@ import Bracelet from '~/assets/images/bracelet.svg'
 import Earrings from '~/assets/images/earrings.svg'
 import Jewerly from '~/assets/images/jewelry.svg'
 import Necklace from '~/assets/images/necklace.svg'
-import Heart from '~/assets/images/heart.svg'
 import ShoppingCart from '~/assets/images/shopping_cart.svg'
 import SearchBar from './searchBar.vue'
 
@@ -108,12 +108,9 @@ const mobileMenuOpen = ref(false)
         <HeaderSearchBar/>
       </div>
 
-      <div class="flex justify-end space-x-4">
+      <div class="flex justify-end items-center space-x-4">
         <HeaderLogin />
-        <span>|</span>
-        <a href="#">
-          <Heart class="text-sm/6 size-7 cursor-pointer hover:fill-red-500"/>
-        </a>
+        <USeparator orientation="vertical" class="h-10" />
         <a href="/cart">
           <ShoppingCart class="text-sm/6 size-7 cursor-pointer hover:fill-blue-600"/>
         </a>

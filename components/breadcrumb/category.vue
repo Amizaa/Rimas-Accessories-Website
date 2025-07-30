@@ -1,6 +1,8 @@
 <script setup>
 
-const items = useBreadCrumbs()
+const items = computed(() => {
+  return useBreadCrumbs()
+})
 
 </script>
 

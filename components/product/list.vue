@@ -7,7 +7,10 @@
     const itemsPerPage = 3
     const page = ref(1)
 
-    const search = route.query.search
+    
+    const search = computed(() => {
+      return route.query.search
+    })
 
 
     // Slice products based on current page

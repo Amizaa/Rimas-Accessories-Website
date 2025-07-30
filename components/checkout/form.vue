@@ -45,7 +45,7 @@ onMounted(async () => {
         'string.email': 'ایمیل وارد شده معتبر نیست',
         'string.empty': 'ایمیل نمی‌تواند خالی باشد',
         }),
-        phone: Joi.string().pattern(/^09[0-9]{9}$/).required().label('شماره موبایل').messages({
+        phone: Joi.string().pattern(/^09[0-9]{9}$/).required().label('شماره همراه').messages({
         'string.pattern.base': 'شماره موبایل باید با ۰۹ شروع شود و ۱۱ رقم داشته باشد',
         'string.empty': 'شماره موبایل نمی‌تواند خالی باشد',
         'any.required': 'لطفا شماره موبایل را وارد کنید',
@@ -90,7 +90,7 @@ watch(() => state.province, () => {
                 <UFormField class="md:col-span-3 col-span-6"  name="lastname" label="نام خانوادگی">
                     <UInput class=" w-full" v-model="state.lastname" />
                 </UFormField>
-                <UFormField class="md:col-span-3 col-span-6"  name="phone" label="شماره موبایل">
+                <UFormField class="md:col-span-3 col-span-6"  name="phone" label="شماره همراه">
                     <UInput class=" w-full" v-model="state.phone" />
                 </UFormField>
                 <UFormField class="md:col-span-3 col-span-6"  name="email" label="ایمیل (اختیاری)">

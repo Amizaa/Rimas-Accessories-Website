@@ -1,8 +1,29 @@
 [
     {
-        "SAVE10": { "discount": 10, "message": "تخفیف 10 درصد اعمال شد" },
-        "FREESHIP": { "discount": 0,"freeShipping": true, "message": "ارسال رایگان اعمال شد" },
-        "WELCOME20": { "discount": 20, "message": "تخفیف 20% اعمال شد" },
-        "FOTHER": { "discount": 25, "message": "تخفیف روز پدر اعمال شد" }
+      "SAVE10": {
+        "title": "تخفیف عمومی",
+        "discount": 10,
+        "message": "تخفیف 10 درصد اعمال شد",
+        "status": "active"
+      },
+      "FREESHIP": {
+        "title": "ارسال رایگان",
+        "discount": 0,
+        "freeShipping": true,
+        "message": "ارسال رایگان اعمال شد",
+        "status": "active"
+      },
+      "WELCOME20": {
+        "title": "تخفیف خوش‌آمدگویی",
+        "discount": 20,
+        "message": "تخفیف 20% اعمال شد",
+        "status": "expired"
+      },
+      "FOTHER": {
+        "title": "تخفیف روز پدر",
+        "discount": 25,
+        "message": "تخفیف روز پدر اعمال شد",
+        "status": "active"
+      }
     }
 ]
