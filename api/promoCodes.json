@@ -1,29 +1,35 @@
 [
-    {
-      "SAVE10": {
-        "title": "تخفیف عمومی",
-        "discount": 10,
-        "message": "تخفیف 10 درصد اعمال شد",
-        "status": "active"
-      },
-      "FREESHIP": {
-        "title": "ارسال رایگان",
-        "discount": 0,
-        "freeShipping": true,
-        "message": "ارسال رایگان اعمال شد",
-        "status": "active"
-      },
-      "WELCOME20": {
-        "title": "تخفیف خوش‌آمدگویی",
-        "discount": 20,
-        "message": "تخفیف 20% اعمال شد",
-        "status": "expired"
-      },
-      "FOTHER": {
-        "title": "تخفیف روز پدر",
-        "discount": 25,
-        "message": "تخفیف روز پدر اعمال شد",
-        "status": "active"
-      }
-    }
+  {
+    "code": "SAVE10",
+    "title": "تخفیف عمومی",
+    "discount": 10,
+    "message": "تخفیف 10 درصد اعمال شد",
+    "status": "active",
+    "expiresAt": "2025-08-20T23:59:59Z"
+  },
+  {
+    "code": "FREESHIP",
+    "title": "ارسال رایگان",
+    "discount": 0,
+    "freeShipping": true,
+    "message": "ارسال رایگان اعمال شد",
+    "status": "active",
+    "expiresAt": "2025-08-25T23:59:59Z"
+  },
+  {
+    "code": "WELCOME20",
+    "title": "تخفیف خوش‌آمدگویی",
+    "discount": 20,
+    "message": "تخفیف 20% اعمال شد",
+    "status": "expired",
+    "expiresAt": "2025-07-01T23:59:59Z"
+  },
+  {
+    "code": "FOTHER",
+    "title": "تخفیف روز پدر",
+    "discount": 25,
+    "message": "تخفیف روز پدر اعمال شد",
+    "status": "active",
+    "expiresAt": "2025-08-10T23:59:59Z"
+  }
 ]

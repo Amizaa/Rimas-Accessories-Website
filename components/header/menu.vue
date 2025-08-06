@@ -119,7 +119,7 @@ const mobileMenuOpen = ref(false)
 
       
     <TransitionRoot appear :show="mobileMenuOpen" as="template">
-      <Dialog as="div" class="lg:hidden" @close="mobileMenuOpen = false" :open="mobileMenuOpen">
+      <Dialog as="div" class="lg:hidden font-azarmehr" @close="mobileMenuOpen = false" :open="mobileMenuOpen">
       <TransitionChild
         as="template"
         enter="duration-300 ease-out"

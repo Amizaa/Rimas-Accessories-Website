@@ -7,7 +7,7 @@
     const order = orders.orders.find(order => order.orderId === route.params.id) || []
 
     definePageMeta({
-        layout: 'account'
+        layout: 'admin'
     })
 
     const pictures = [
@@ -18,13 +18,15 @@
     'https://picsum.photos/468/468?random=5',
     'https://picsum.photos/468/468?random=6'
     ]
+
+    const trackingCode = ref('')
 </script>
 
 <template>
     <h1 class="text-2xl text-center mt-4 font-azarmehrbold">سفارش {{order.orderId}}</h1>
 
 
-    <div class=" space-y-3 p-2 mt-4 w-full shadow-md rounded-2xl text-sm">
+    <div class=" space-y-3 p-2 mt-4 w-full shadow-md rounded-2xl text-sm mb-30">
         <div>
             <div class="p-2">
                 <h3 class="text-right font-bold text-lg mb-6">اطلاعات سفارش</h3>
@@ -79,13 +81,21 @@
                         <li>دسته بندی: <span class="font-bold">{{item.category}}</span></li>
                         <li>مدل: <span class="font-bold">ژوپینگ</span></li>
                         <li>رنگ: <span class="font-bold">طلایی</span></li>
-                        <li>سایز<span class="font-bold">20 سانت</span></li>
+                        <li>سایز: <span class="font-bold">20 سانت</span></li>
                         <li>تعداد: <span class="font-bold">{{item.quantity}}</span></li>
                         <li>قیمت کل: <span class="font-bold">{{separatePrice(item.price)}} تومان</span></li>
                     </ul>
                 </div>
             </div>
-
+        </div>
+        <div class="flex justify-center space-x-3 my-5">
+            <button class=" rounded-full bg-green-500 cursor-pointer p-3 text-white text-lg">ارسال سفارش</button>
+            <button class=" rounded-full bg-red-500 cursor-pointer p-3 text-white text-lg">لغو سفارش </button>
+        </div>
+        <div class=" my-7 flex justify-center  items-center">
+            <h6 class="text-lg mx-3">درج کد رهگیری: </h6>
+            <UInput v-model="trackingCode" placeholder="کد رهگیری "  color="neutral"  size="xl"/>
+            <button class=" rounded-l-full p-2.5 bg-blue-400 cursor-pointer text-white">اعمال</button>
         </div>
     </div>
 
