@@ -11,7 +11,7 @@
     loop
     :auto-scroll="{speed:1}"
     :items="items"
-    :ui="{ item: 'basis-1/3' }"
+    :ui="{ item: 'md:basis-1/5 basis-1/2' }"
   >
   <ProductCard :item="item" class=" w-7/8" />
 </UCarousel>

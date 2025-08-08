@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import Logo from '@/public/images/Logo.png'
 
-const sectionsData = [
+const items = [
   { title: 'گوشواره', description: 'زیباترین گوشواره ها', href: '#', image: Logo},
   { title: 'گردنبند', description: 'با گردنبد های ما شیک شوید', href: '#', image: Logo },
   { title: 'دستبند', description: 'مناسب دست های ظریف شما', href: '#', image: Logo},
@@ -11,65 +11,34 @@ const sectionsData = [
 
 ]
 
-const containerRef = ref(null)
-const currentSection = ref(0)
-
-
-const isScrolling = ref(false)
-
-function scrollToSection(index) {
-  if (!isScrolling.value && containerRef.value) {
-    isScrolling.value = true
-    const sections = containerRef.value.querySelectorAll('.scroll-section')
-    sections[index]?.scrollIntoView({ behavior: 'smooth' })
-    currentSection.value = index
-    setTimeout(() => {
-      isScrolling.value = false
-    }, 1000)
-  }
-}
-
-function handleScroll() {
-  if (containerRef.value) {
-    const index = Math.round(containerRef.value.scrollTop / window.innerHeight)
-    currentSection.value = index
-  }
-}
-
-function dotClass(index) {
-  return `w-3 h-3 rounded-full transition-all duration-300  cursor-pointer ${
-    index === currentSection.value
-      ? 'bg-white scale-150'
-      : 'bg-white/20 hover:bg-white hover:scale-150'
-  }`
-}
 </script>
 
 <template>
-  <div ref="containerRef" class="scroll-container mt-4 h-screen overflow-y-hidden overflow-x-hidden" @scroll="handleScroll">
-    <section v-for="(section, index) in sectionsData" :key="index" class="scroll-section relative h-screen flex flex-col md:flex-row">
-      <div :class="`w-full md:w-1/2 h-1/2 md:h-full relative overflow-hidden group shine-effect ${index % 2 === 0 ? '' : 'md:order-last'}`">
-        <img :src="section.image" class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 group-hover:rotate-1" />
+  <div class="w-full mt-5">
+    <UCarousel
+      v-slot="{ item, index }"
+      orientation="vertical"
+      :items="items"
+      :ui="{ container: 'md:h-screen h-screen w-full h-[calc(100vh_-_140px)]', item: 'w-full', controls: 'absolute right-8  inset-y-100',
+      dots: '-right-7',}"
+      class="w-full mx-auto"
+      dots
+      autoplay
+    >
+    <section class=" relative w-full h-screen flex flex-col md:flex-row">
+      <div :class="`w-full h-1/2 md:h-full relative overflow-hidden group shine-effect ${index % 2 === 0 ? '' : 'md:order-last'}`">
+        <img :src="item.image" class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 group-hover:rotate-1" />
         <div :class="`absolute inset-0 bg-gradient-to-${index % 2 === 0 ? 'r' : 'l'} from-neutral-950/70 to-neutral-950/50 transition-opacity duration-500 group-hover:opacity-0`"></div>
       </div>
-      <div class="w-full md:w-1/2 h-1/2 md:h-full flex items-center justify-center p-8" :class="index === 1 ? 'bg-neutral-900' : 'bg-neutral-950'">
-        <div class="max-w-lg float-animation">
-          <h2 class="mt-4 text-5xl md:text-7xl font-bold leading-none bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-transparent py-3">{{ section.title }}</h2>
-          <p class="mt-6 text-neutral-400 text-lg leading-relaxed">{{ section.description }}</p>
-          <button class=" cursor-pointer mt-8 px-6 py-3 bg-white/10 hover:bg-white/20 rounded-full text-sm font-medium transition-all duration-300 hover:tracking-wider">مشاهده {{section.title}} ها</button>
+      <div class="w-full h-1/2 md:h-full flex items-center justify-center p-8" :class="index === 1 ? 'bg-neutral-900' : 'bg-neutral-950'">
+        <div class="max-w-lg float-animation text-center">
+          <h2 class=" text-center text-4xl md:text-7xl font-bold leading-none bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-transparent py-3">{{ item.title }}</h2>
+          <p class="md:mt-6 text-neutral-400 text-lg leading-relaxed">{{ item.description }}</p>
+          <button class=" cursor-pointer mt-2 md:mt-8 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full text-sm font-medium transition-all duration-300 hover:tracking-wider">مشاهده {{item.title}} ها</button>
         </div>
       </div>
     </section>
-    <!-- Navigation dots -->
-    <div class=" absolute mr-14 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-50">
-      <button
-        v-for="(_, index) in sectionsData"
-        :key="index"
-        :class="dotClass(index)"
-        @click="scrollToSection(index)"
-        :title="`Go to section ${index + 1}`"
-      />
-    </div>
+  </UCarousel>
 
   </div>
 </template>

@@ -1,6 +1,6 @@
 <template>
     <HeaderMenu />
-    <div class=" container">
+    <div class=" md:container">
 
         <slot />
 
