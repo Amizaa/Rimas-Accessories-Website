@@ -10,6 +10,10 @@
         layout: 'account'
     })
 
+    useHead({
+        title: `سفارش شماره ${order.orderId}`
+    })
+
     const pictures = [
     'https://picsum.photos/468/468?random=1',
     'https://picsum.photos/468/468?random=2',

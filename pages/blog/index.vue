@@ -1,6 +1,10 @@
 <script setup>
     const {posts} = usePosts()
 
+    useHead({
+        title: 'وبلاگ'
+    })
+
     const topViewedPosts = posts
     .sort((a, b) => b.views - a.views)
     .slice(0, 3);

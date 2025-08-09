@@ -4,6 +4,10 @@ definePageMeta({
     layout:'admin'
 })
 
+useHead({
+    title: 'سفارش ها'
+})
+
 const processingOrders = orders
   .flatMap(user => user.orders.map(order => ({ ...order, userId: user.userId })))
   .filter(order => order.status === "processing");

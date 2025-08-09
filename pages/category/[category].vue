@@ -2,6 +2,12 @@
 
 import { ProductList, SidebarFilter } from '#components';
 
+const route = useRoute()
+
+useHead({
+    title: route.params.category == 'all' ? 'همه محصولات' : `دسته بندی ${route.params.category}`
+})
+
 </script>
 
 <template>

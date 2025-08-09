@@ -1,3 +1,13 @@
+<script setup>
+ definePageMeta({
+  layout:'admin'
+ })
+
+  useHead({
+      title: 'بلاگ جدید'
+  })
+</script>
+
 <template>
   <h1 class=" text-4xl text-center font-azarmehrbold my-5"> بلاگ جدید</h1>
   <div class="mt-5 shadow bg-white w-full flex flex-col gap-5 px-3 md:px-16 lg:px-28 md:flex-row">
@@ -10,9 +20,3 @@
   </div>
 </template>
 
-<script setup>
- definePageMeta({
-  layout:'admin'
- })
-
-</script>

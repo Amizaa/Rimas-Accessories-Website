@@ -3,17 +3,20 @@
     const slug = route.params.slug
 
     const {posts} = usePosts()
-
+    
     const topViewedPosts = posts
     .sort((a, b) => b.views - a.views)
     .slice(0, 3);
-
+    
     const newestPosts = posts
     .sort((a, b) => new Date(b.published_at) - new Date(a.published_at))
     .slice(0, 3);
-
+    
     const post = posts.find(p => p.slug === slug);
-
+    
+    useHead({
+        title: post.title
+    })
 
 </script>
 

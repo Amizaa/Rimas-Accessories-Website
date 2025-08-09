@@ -1,3 +1,9 @@
+<script setup>
+    useHead({
+        title: 'تماس با ما'
+    })
+</script>
+
 <template>
     <div class="shadow-xl rounded-2xl p-5 my-14">
         <h1 class="text-4xl underline underline-offset-18 mb-8 mt-2 font-azarmehrbold text-center">با ما در ارتباط باشید</h1>

@@ -23,6 +23,10 @@ function onSelect() {
   searchTerm.value = ''
 }
 
+useHead({
+    title: 'مشتری ها'
+})
+
 </script>
 
 <template>

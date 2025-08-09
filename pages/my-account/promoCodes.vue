@@ -6,6 +6,10 @@
         layout: 'account'
     })
 
+    useHead({
+        title: 'کد های تخفیف من'
+    })
+
     const { copy } = useClipboard()
     const toast = useToast()
 

@@ -1,6 +1,9 @@
 <script setup>
     const {products} = useProducts()
     
+    useHead({
+        title: 'ریماس اکسسوری'
+    })
 </script>
 
 <template>

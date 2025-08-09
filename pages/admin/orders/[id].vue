@@ -20,6 +20,10 @@
     ]
 
     const trackingCode = ref('')
+
+    useHead({
+        title: `سفارش شماره ${order.orderId}`
+    })
 </script>
 
 <template>

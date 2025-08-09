@@ -3,6 +3,10 @@
         layout: 'account'
     })
 
+    useHead({
+        title: 'آدرس های من'
+    })
+
   const receivers = [
     {
       "receiverName": "حامد رحیمی",

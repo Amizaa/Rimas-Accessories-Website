@@ -1,6 +1,10 @@
 <script setup>
     const { products } = useProducts() // Assume this returns all products
 
+
+    useHead({
+        title: products[0].title
+    })
 </script>
 
 <template>

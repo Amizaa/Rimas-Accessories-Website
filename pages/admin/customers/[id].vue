@@ -22,6 +22,10 @@ const items = [
 'https://picsum.photos/468/468?random=5',
 'https://picsum.photos/468/468?random=6'
 ]
+
+useHead({
+    title: `مشتری ${user.id}`
+})
 </script>
 
 <template>

@@ -1,4 +1,7 @@
 <script setup>
+    useHead({
+        title: 'اطلاعات کاربری'
+    })
 
     definePageMeta({
         layout: 'account'

@@ -5,6 +5,10 @@ definePageMeta({
 })
 const route = useRoute()
 const post = posts.find((post) => {return post.id == route.params.id})
+
+useHead({
+    title: post.title
+})
 </script>
 
 <template>

@@ -7,6 +7,10 @@ definePageMeta({
     layout:'admin'
 })
 
+useHead({
+    title: 'داشبورد'
+})
+
 const items = ref([
     {
         label: 'سالانه',

@@ -3,6 +3,10 @@ import products from '~/api/products.json'
 definePageMeta({
     layout:'admin'
 })
+
+useHead({
+    title: 'محصولات'
+})
 </script>
 
 <template>

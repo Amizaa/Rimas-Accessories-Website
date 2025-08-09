@@ -3,6 +3,10 @@ import { TrashIcon } from '@heroicons/vue/24/outline';
 import { priceToPersianWords, separatePrice } from 'price-seprator';
 import ShoppingCart from '~/assets/images/shopping_cart.svg'
 
+  useHead({
+      title: 'سبد خرید'
+  })
+
 const toast = useToast()
 
   const promoCode = ref()

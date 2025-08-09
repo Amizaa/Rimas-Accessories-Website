@@ -34,7 +34,7 @@
     <ProductDetailPrice price="200000" off="0" :available="available" />
     
     <div v-if="available" class="flex justify-center mt-6">
-      <button class=" cursor-pointer p-2 rounded-full bg-indigo-200 text-center hover:bg-indigo-400 text-white transition-all duration-300">افزودن به سبد خرید</button>
+      <button class=" cursor-pointer p-2 rounded-full bg-indigo-400 text-center hover:bg-indigo-500 text-white transition-all duration-300">افزودن به سبد خرید</button>
     </div>
     
     

@@ -3,6 +3,10 @@
 definePageMeta({
     layout:'admin'
 })
+
+useHead({
+    title: 'کد های تخفیف'
+})
 </script>
 
 <template>
