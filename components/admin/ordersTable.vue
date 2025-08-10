@@ -12,10 +12,6 @@ const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 
-const toast = useToast()
-const { copy } = useClipboard()
-
-
 const columns = [
   {
     accessorKey: 'orderId',

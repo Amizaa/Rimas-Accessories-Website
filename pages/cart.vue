@@ -2,6 +2,7 @@
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import { priceToPersianWords, separatePrice } from 'price-seprator';
 import ShoppingCart from '~/assets/images/shopping_cart.svg'
+import products from '~/api/products.json'
 
   useHead({
       title: 'سبد خرید'
@@ -38,42 +39,7 @@ const toast = useToast()
 
   }
 
-    const cartItems = ref ([
-          {
-            name: "Laptop",
-            model: "XPS 13",
-            hsCode: "847130",
-            quantity: 1,
-            weight: 2.5,
-            perPieceRate: 100000,
-            totalPrice: 100000,
-            color: "Silver",
-            deliveryMethod: "Air",
-            description: "A powerful and lightweight laptop with excellent performance.",
-            isEditingDescription: false,
-            originalDescription: "",
-            showDescription: false,
-            image: "https://via.placeholder.com/150"
-          },
-          {
-            name: "Smartphone",
-            model: "iPhone 14",
-            hsCode: "851712",
-            quantity: 2,
-            weight: 0.5,
-            perPieceRate: 250000,
-            totalPrice: 500000,
-            color: "Black",
-            deliveryMethod: "Ship",
-            description: "The latest iPhone with advanced camera and processing power.",
-            isEditingDescription: false,
-            originalDescription: "",
-            showDescription: false,
-            image: "https://via.placeholder.com/150"
-          }
-    ])
-    
-    
+      
   const delivryOptions = ref([
     {
       label: 'شرکت پست',
@@ -91,25 +57,53 @@ const toast = useToast()
     },
   ])
 
-const updateQuantity = (index, newQuantity) => {
-  const item = cartItems.value[index]
-  console.log(item);
-  item.quantity = newQuantity
-  console.log(item.quantity);
-  item.totalPrice = Number((item.perPieceRate * newQuantity).toFixed(2))
-}
-
     
 const deliveryOption = ref('post')
 
-const colorItems = ref(['گلد', 'قرمز', 'آبی'])
-const modelItems = ref([101,105,110])
-const sizeItems = ref([10,12,14,18])
+const colorItems = ref(['گلد', 'آویز', 'دنجر', 'فلش بک'])
+const modelItems = ref(['گلد', 'آویز', 'دنجر', 'فلش بک'])
+const sizeItems = ref(['گلد', 'آویز', 'دنجر', 'فلش بک'])
 
-const number = ref([])
+
+
+
+const { cart, updateCartItem, removeFromCart } = useCart()
+
+
+function handleUpdate(item, value) {
+    const original = item
+    const updates = {
+      ['quantity']: value
+    }
+
+    updateCartItem(original, updates)
+}
+
+onMounted(() => {
+  const cartCookie = useCookie('cart')
+  if (cartCookie.value) {
+    try {
+      cartStore.cart = cartCookie.value
+    } catch (e) {
+      cartStore.cart = []
+    }
+  }
+})
+
+const cartStore = useCart()
+
+const cartItems = computed(() =>
+cartStore.cart.map(cartItem => {
+  const productDetail = products.find(p => p.id == cartItem.id)
+  return {
+      ...cartItem,
+      productDetail
+    }
+  })
+)
 
 const subtotal = computed (() => {
- return cartItems.value.reduce((sum, item) => sum + item.totalPrice, 0);
+ return cartItems.value.reduce((sum, item) => sum + (( item.productDetail.price * (100 - item.productDetail.discount) ) / 100) * item.quantity, 0);
 })
 
 const deliveryCost = computed(() => {
@@ -154,13 +148,12 @@ const total = computed(() => {
             <div v-for="(item, index) in cartItems" :key="index" class="bg-white rounded-lg shadow-md p-4 mb-4">
             <div class="flex justify-between items-start">
                 <div class="flex items-start space-x-3">
-                <img src="/assets/images/necklace.png" alt="Product" class="w-20 h-20 object-cover rounded">
+                <img :src="item.productDetail.image" alt="Product" class="w-20 h-20 object-cover rounded">
                 <div>
-                    <h2 class="font-semibold text-lg">{{item.name}}</h2>
-                    <p class="text-sm text-gray-600">{{item.model}}</p>
+                    <h2 class="font-semibold text-lg">{{item.productDetail.title}}</h2>
                 </div>
                 </div>
-                <button class="text-red-500 hover:text-red-700">
+                <button @click="removeFromCart(index)" class="text-red-500 hover:text-red-700 cursor-pointer">
                 <TrashIcon class="w-8"/>
                 </button>
             </div>
@@ -168,21 +161,21 @@ const total = computed(() => {
             <div class="mt-4 space-y-2">
                 <div class="flex justify-between">
                 <span class="text-gray-600">کد:</span>
-                <span >{{item.hsCode}}</span>
+                <span >{{item.id}}</span>
                 </div>
                 
 
                     <div class="flex items-center">
                       <span class="text-sm text-gray-600 ml-2">رنگ:</span>
-                      <CartSelect value="قرمز" :items="colorItems" class="w-full" />
+                      <CartSelect :value="item.color" :items="colorItems" field="color" :cart-item="item" class="w-full" />
                     </div>
                     <div class="flex items-center">
                     <span class="text-sm text-gray-600 ml-2">مدل:</span>
-                      <CartSelect value="101" :items="modelItems" class="w-full" />
+                      <CartSelect :value="item.model" :items="modelItems" field="model" :cart-item="item"  class="w-full" />
                     </div>
                     <div class="flex items-center">
                     <span class="text-sm text-gray-600 ml-2 ">سایز:</span>
-                      <CartSelect value="10" :items="sizeItems" class="w-full" />
+                      <CartSelect :value="item.size" :items="sizeItems" field="size" :cart-item="item"  class="w-full" />
                     </div>
 
                 
@@ -201,10 +194,10 @@ const total = computed(() => {
                                 class: 'cursor-pointer',
                                 size: 'sm'
                               }"
-                              :min="1" :max="10"
+                              :min="1" :max="item.productDetail.quantity"
                               size="sm"
                               color="neutral" highlight
-                              @update:modelValue="val => updateQuantity(index, val)"
+                              @update:modelValue="val => handleUpdate(item, val)"
                             />
                 </div>
                 </div>
@@ -212,12 +205,12 @@ const total = computed(() => {
                 
                 <div class="flex justify-between font-medium">
                 <span>قیمت:</span>
-                <span>{{separatePrice(item.perPieceRate)}} تومان</span>
+                <span>{{separatePrice((item.productDetail.price * (100 - item.productDetail.discount)) / 100 )}} تومان</span>
                 </div>
                 
                 <div class="flex justify-between font-bold">
                 <span>قیمت کل:</span>
-                <span>{{separatePrice(item.totalPrice)}} تومان</span>
+                <span>{{separatePrice((( item.productDetail.price * (100 - item.productDetail.discount) ) / 100) * item.quantity)}} تومان</span>
                 </div>
                 
             </div>
@@ -242,11 +235,10 @@ const total = computed(() => {
                     <tr v-for="(item, index) in cartItems" :key="index" class="border-t border-gray-200 hover:bg-gray-50 transition">
                         <td class="py-4 px-4">
                             <div class="flex items-center space-x-3">
-                                <img src="/assets/images/necklace.png" alt="Product" class="w-20 h-20 object-cover rounded">
+                                <img :src="item.productDetail.image" alt="Product" class="w-20 h-20 object-cover rounded">
                                 <div>
-                                <h3 class="font-medium">{{item.name}}</h3>
-                                <p class="text-sm text-gray-600">{{item.model}}</p>
-                                <p class="text-xs text-gray-500">کد: {{item.hsCode}}</p>
+                                <h3 class="font-medium">{{item.productDetail.title}}</h3>
+                                <p class="text-xs text-gray-500">کد: {{item.id}}</p>
                                 </div>
                             </div>
                         </td>
@@ -254,15 +246,15 @@ const total = computed(() => {
                             <div class="space-y-2">
                                 <div class="flex items-center">
                                   <span class="text-sm text-gray-600 mx-2">رنگ:</span>
-                                  <CartSelect value="قرمز" :items="colorItems" class="w-full" />
+                                  <CartSelect :value="item.color" :items="colorItems" field="color" :cart-item="item"   class="w-full" />
                                 </div>
                                 <div class="flex items-center">
                                 <span class="text-sm text-gray-600 mx-2">مدل:</span>
-                                  <CartSelect value="101" :items="modelItems" class="w-full" />
+                                  <CartSelect :value="item.model" :items="modelItems" field="model" :cart-item="item"   class="w-full" />
                                 </div>
                                 <div class="flex items-center">
                                 <span class="text-sm text-gray-600 mx-2">سایز:</span>
-                                  <CartSelect value="10" :items="sizeItems" class="w-full" />
+                                  <CartSelect :value="item.size" :items="sizeItems" field="size" :cart-item="item"   class="w-full" />
                                 </div>
                             </div>
                         </td>
@@ -280,21 +272,21 @@ const total = computed(() => {
                                 class: 'cursor-pointer',
                                 size: 'sm'
                               }"
-                              :min="1" :max="10"
+                              :min="1" :max="item.productDetail.quantity"
                               size="sm"
                               color="neutral" highlight
-                              @update:modelValue="val => updateQuantity(index, val)"
+                              @update:modelValue="val => handleUpdate(item, val)"
                             />
                           </div>      
                         </td>
                         <td class="py-4 px-4 text-right">
-                            <span class="font-medium">{{separatePrice(item.perPieceRate)}} تومان</span>
+                            <span class="font-medium">{{separatePrice(( item.productDetail.price * (100 - item.productDetail.discount) ) / 100)}} تومان</span>
                         </td>
                         <td class="py-4 px-4 text-right">
-                            <span class="font-bold">{{separatePrice(item.totalPrice)}} تومان</span>
+                            <span class="font-bold">{{separatePrice((( item.productDetail.price * (100 - item.productDetail.discount) ) / 100) * item.quantity)}} تومان</span>
                         </td>
                         <td class="py-4 px-4 text-center">
-                            <button class=" cursor-pointer text-red-500 hover:text-red-700 p-1">
+                            <button @click="removeFromCart(index)" class=" cursor-pointer text-red-500 hover:text-red-700 p-1">
                                 <TrashIcon class="w-8"/>
                             </button>
                         </td>

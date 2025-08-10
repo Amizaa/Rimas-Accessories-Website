@@ -2,7 +2,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/ui', 'nuxt-charts','@nuxt/content'],
+  modules: ['@nuxt/ui', 'nuxt-charts', '@nuxt/content', '@pinia/nuxt'],
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
   vite: {

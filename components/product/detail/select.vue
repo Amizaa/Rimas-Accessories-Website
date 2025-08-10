@@ -3,10 +3,16 @@
         items: Array,
         title: String,
         placeholder: String,
+        modelValue: String
     })
 
-    const value = ref()
-    
+    const value = ref(props.modelValue)
+
+    const emit = defineEmits(['update:modelValue'])
+
+    watch(value, (newVal) => {
+        emit('update:modelValue', newVal)
+    })
 </script>
 
 <template>

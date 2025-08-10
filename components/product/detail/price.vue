@@ -3,6 +3,7 @@
         price: Number,
         available: Boolean,
         off: Number,
+        modelValue: Number,
 
     })
     const number = ref(1)
@@ -10,6 +11,12 @@
     const realPrice = (props.price * (100 - props.off)) / 100 
 
     import { separatePrice } from 'price-seprator'
+
+    const emit = defineEmits(['update:modelValue'])
+
+    watch(number, (newVal) => {
+        emit('update:modelValue', newVal)
+    })
 
 </script>
 
