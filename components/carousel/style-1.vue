@@ -14,18 +14,18 @@ const items = [
 </script>
 
 <template>
-  <div class="w-full mt-5">
+  <div class="w-full mt-5 flex items-center">
     <UCarousel
       v-slot="{ item, index }"
       orientation="vertical"
       :items="items"
-      :ui="{ container: 'md:h-screen h-screen w-full h-[calc(100vh_-_140px)]', item: 'w-full', controls: 'absolute right-8  inset-y-100',
+      :ui="{ container: 'h-150 w-full', item: 'w-full', controls: 'absolute right-8  inset-y-70',
       dots: '-right-7',}"
       class="w-full mx-auto"
       dots
       autoplay
     >
-    <section class=" relative w-full h-screen flex flex-col md:flex-row">
+    <section class=" relative w-full h-150 flex flex-col md:flex-row">
       <div :class="`w-full h-1/2 md:h-full relative overflow-hidden group shine-effect ${index % 2 === 0 ? '' : 'md:order-last'}`">
         <img :src="item.image" class="absolute inset-0 w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 group-hover:rotate-1" />
         <div :class="`absolute inset-0 bg-gradient-to-${index % 2 === 0 ? 'r' : 'l'} from-neutral-950/70 to-neutral-950/50 transition-opacity duration-500 group-hover:opacity-0`"></div>
