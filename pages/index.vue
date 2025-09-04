@@ -1,17 +1,25 @@
 <script setup>
-    const {products} = useProducts()
-    
+
     useHead({
         title: 'ریماس اکسسوری'
     })
+
+    const necklaceCat = ref([])
+    const lastProducts = ref([])
+    const discountedProducts = ref([])
+    lastProducts.value = await useFetchProducts({lastAdded:true,limit:10})
+    necklaceCat.value = await useFetchProducts({category: 'گوشواره'}) 
+    discountedProducts.value = await useFetchProducts({hasDiscount: true})
 </script>
 
 <template>
     <CarouselStyle1 class="w-full mx-0"/>
 
-    <SectionSlider title="محصولات جدید" :items="products"/>
+    <SectionSlider title="محصولات جدید" :items="lastProducts"/>
 
-    <SectionSlider title="پرفروش ترین ها" :items="products"/>
+    <SectionSlider title="تخفیف ها" :items="discountedProducts"/>
+
+    <SectionSlider title="گوشواره ها" :items="necklaceCat"/>
 
     <div class=" bg-gradient-to-t from-zinc-50 to-zinc-300 my-20 p-4">
         <h1 class="text-center text-3xl mb-7 font-bold">سوالات متداول</h1>

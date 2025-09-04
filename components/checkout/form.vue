@@ -1,64 +1,77 @@
 <script setup>
+const userComposable = useUser(1)   // DO NOT await here
+
+const user = ref('')
+user.value = await userComposable.fetchUser()
+
+const addresses = computed(() => user.value?.addresses ?? [])
+
+const items = computed(() => {
+    return addresses.value.map(address => ({
+            label: address.address_detail,
+            value: address.id.toString(),
+            receiver_name: address.receiver_name,
+            receiver_phone: address.receiver_phone,
+            province: address.province,
+            city: address.city,
+            postal_code: address.postal_code
+            }))
+}) 
+const selectedAddress = ref(addresses.value[0]?.id.toString())
+
 const state = reactive({
-    firstname: undefined,
-    lastname: undefined,
-    address: undefined,
-    province: undefined,
-    city:undefined,
-    postCode: undefined,
-    email:undefined,
-    phone:undefined,
+    firstname: user.value?.first_name,
+    lastname: user.value?.last_name,
+    email:user.value?.email,
+    phone: user.value?.phone,
     description:undefined
 });
 
-const schema = ref(null); // Use ref so it's reactive
-
-onMounted(async () => {
-    const { default: Joi } = await import('joi'); // Or 'joi' if you're using the SSR-safe version
-    
-    schema.value = Joi.object({
-        firstname: Joi.string().required().label('نام').messages({
-        'string.base': 'نام باید یک رشته باشد',
-        'string.empty': 'نام نمی‌تواند خالی باشد',
-        'any.required': 'لطفا نام را وارد کنید',
-        }),
-        lastname: Joi.string().required().label('نام خانوادگی').messages({
-        'string.base': 'نام خانوادگی باید یک رشته باشد',
-        'string.empty': 'نام خانوادگی نمی‌تواند خالی باشد',
-        'any.required': 'لطفا نام خانوادگی را وارد کنید',
-        }),
-        address: Joi.string().required().label('آدرس').messages({
-        'string.base': 'آدرس باید یک رشته باشد',
-        'string.empty': 'آدرس نمی‌تواند خالی باشد',
-        'any.required': 'لطفا آدرس خود را وارد کنید',
-        }),
-        province: Joi.string().required().label('استان').label('استان')
-        .messages({
-        'string.empty': 'استان نمی‌تواند خالی باشد',
-        'any.required': 'لطفا استان را وارد کنید',
-        }),
-        city: Joi.string().required().label('شهر').messages({
-        'string.empty': 'شهر نمی‌تواند خالی باشد',
-        'any.required': 'لطفا شهر را وارد کنید',
-        }),
-        email: Joi.string().email({ tlds: { allow: false } }).label('ایمیل').optional().allow('').messages({
-        'string.email': 'ایمیل وارد شده معتبر نیست',
-        'string.empty': 'ایمیل نمی‌تواند خالی باشد',
-        }),
-        phone: Joi.string().pattern(/^09[0-9]{9}$/).required().label('شماره همراه').messages({
-        'string.pattern.base': 'شماره موبایل باید با ۰۹ شروع شود و ۱۱ رقم داشته باشد',
-        'string.empty': 'شماره موبایل نمی‌تواند خالی باشد',
-        'any.required': 'لطفا شماره موبایل را وارد کنید',
-        }),
-        postCode: Joi.string().pattern(/^[0-9]{10}$/).required().label('کد پستی').messages({
-        'string.pattern.base': 'کد پستی باید دقیقاً ۱۰ رقم باشد',
-        'string.empty': 'کد پستی نمی‌تواند خالی باشد',
-        'any.required': 'لطفا کد پستی را وارد کنید',
-        }),
-        description: Joi.string().allow('').optional()
-                
-        });
+const errors = reactive({
+  firstname: '',
+  lastname: '',
+  email: '',
+  phone: ''
 });
+
+
+function validateForm(data) {
+  let isValid = true;
+
+  if (!data.firstname) {
+    errors.firstname = 'لطفا نام خود را وارد کنید';
+    isValid = false;
+  } else {
+    errors.firstname = '';
+  }
+  
+  if (!data.lastname) {
+    errors.lastname = 'لطفا نام خانوادگی خود را وارد کنید';
+    isValid = false;
+  } else {
+    errors.lastname = '';
+  }
+
+  if (!data.phone){
+    errors.phone = 'شماره همراه خود را وارد کنید';
+    isValid = false;
+  } else if (!/^09[0-9]{9}$/.test(data.phone)) {
+    errors.phone = 'شماره همراه باید با ۰۹ شروع شود و ۱۱ رقم داشته باشد';
+    isValid = false;
+  } else {
+    errors.phone = '';
+  }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+    errors.email = 'فرمت ایمیل معتبر نیست';
+    isValid = false;
+    } else {
+    errors.email = '';
+    }
+
+
+  return isValid;
+}
 
 
 const {provinceOptions} = useProvinces()
@@ -76,38 +89,80 @@ watch(() => state.province, () => {
   state.city = undefined
 })
 
+const emit = defineEmits(['validated'])
+
+async function submitForm() {
+  const isValid = validateForm(state);
+  if (!isValid) {
+    return
+  }
+
+  const userUpdatedData = {
+    first_name: state.firstname,
+    last_name: state.lastname,
+    phone: state.phone,
+    email: state.email
+  }
+  await userComposable.updateUser(userUpdatedData,user.value?.id)
+
+  emit('validated', {
+    selectedAddress: selectedAddress.value,
+  })
+}
+
+defineExpose({ submitForm })
+
+async function refreshUser() {
+  const updatedUser = await userComposable.fetchUser()
+  user.value = updatedUser
+
+  selectedAddress.value = addresses.value[0]?.id.toString()
+}
 </script>
 
 
 <template>
-
-    <div class="md:col-span-2">
         <div class=" rounded-lg shadow-md p-4 sm:p-6 mb-6">
-            <UForm  :schema="schema" :state="state" class="space-y-4 space-x-3 grid grid-cols-6" @submit="onSubmit">
+            <UForm :state="state" class="space-y-4 space-x-3 grid grid-cols-6">
                 <UFormField class="md:col-span-3 col-span-6" name="firstname" label="نام">
                     <UInput class=" w-full" v-model="state.firstname" />
+                    <span class="text-red-500 text-sm">{{ errors.firstname }}</span>
                 </UFormField>
                 <UFormField class="md:col-span-3 col-span-6"  name="lastname" label="نام خانوادگی">
                     <UInput class=" w-full" v-model="state.lastname" />
+                    <span class="text-red-500 text-sm">{{ errors.lastname }}</span>
                 </UFormField>
                 <UFormField class="md:col-span-3 col-span-6"  name="phone" label="شماره همراه">
                     <UInput class=" w-full" v-model="state.phone" />
+                    <span class="text-red-500 text-sm">{{ errors.phone }}</span>
                 </UFormField>
                 <UFormField class="md:col-span-3 col-span-6"  name="email" label="ایمیل (اختیاری)">
                     <UInput class=" w-full" v-model="state.email" />
+                    <span class="text-red-500 text-sm">{{ errors.email }}</span>
                 </UFormField>
-                <UFormField class="md:col-span-2 col-span-6" name="province" label="استان">
-                    <USelectMenu placeholder="انتخاب استان"  style="direction: ltr;" :search-input="{placeholder: 'جست و جوی استان',}" v-model="state.province" :items="provinceItems" class="w-full" />
-                </UFormField>
-                <UFormField class="md:col-span-2 col-span-6" name="city" label="شهر">
-                    <USelectMenu :disabled="CityItems.length === 0" placeholder="انتخاب شهر"  style="direction: ltr;" :search-input="{placeholder: 'جست و جوی شهر',}" v-model="state.city" :items="CityItems" class="w-full" />
-                </UFormField>
-                <UFormField class="md:col-span-2 col-span-6"  name="postCode" label="کد پستی">
-                    <UInput placeholder="کد پستی 10 رقمی" class=" w-full" v-model="state.postCode" />
-                </UFormField>
-                <UFormField class="col-span-6"  name="address" label="آدرس">
-                    <UInput class=" w-full" v-model="state.address" />
-                </UFormField>
+                <div class="col-span-6">
+                    <h4 class=" text-center text-sm mb-3">انتخاب آدرس</h4>
+                    <URadioGroup
+                        indicator="hidden"
+                        variant="card"
+                        :items="items"
+                        v-model="selectedAddress"
+                        :ui="{ fieldset:' grid grid-cols-2 md:grid-cols-3' , item:' cursor-pointer'}"
+                        style="direction: rtl;"
+                    >
+                        <template #label="{ item }">
+                            <div class="text-right space-y-2" style="direction: ltr;">
+                                <p class=" text-sm">گیرنده: <span class="font-semibold">{{ item.receiver_name }}</span></p>
+                                <p class=" text-sm">شماره همراه گیرنده: <span class="font-semibold">{{ item.receiver_phone }}</span></p>
+                                <p class=" text-sm"> کد پستی: <span class="font-semibold">{{ item.postal_code }}</span></p>
+                                <p class="font-semibold text-sm">{{item.province}} - {{item.city}} - {{ item.label }}</p>
+                            </div>
+                        </template>
+                    </URadioGroup>        
+                </div>
+                <div class="col-span-6">
+                    <AccountAddressForm @addressAdded="refreshUser"/>
+                </div>
                 
                 <UFormField class="col-span-6" label="توضیحات تکمیلی (اختیاری)" name="description">
                     <UTextarea class="w-full" placeholder="هر توضیحی که در رابطه با سفارش مورد نیاز است را در اینجا بیان کنید" v-model="state.description"/>
@@ -115,8 +170,7 @@ watch(() => state.province, () => {
 
             </UForm>
         </div>
-    
-    </div>
+
 </template>
 
 

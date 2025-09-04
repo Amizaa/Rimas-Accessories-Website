@@ -1,48 +1,40 @@
 <script setup>
 import { separatePrice } from 'price-seprator'
 
-const categories = [
-  { name: 'گوشواره', description: 'زیباترین گوشواره ها' },
-  { name: 'گردنبند', description: 'با گردنبد های ما شیک شوید'},
-  { name: 'دستبند', description: 'مناسب دست های ظریف شما' },
-  { name: 'پابند', description: 'اصیل و زیبا بمانید'},
-  { name: 'ست', description: 'برای پارتنر های عاشق'},
-
-]
+const categories = await useFetchCategories()
 
 const route = useRoute()
-const router = useRouter()
 
 const value = ref([25000,2000000])
  
 const search = route.query.search
+const minPrice = route.query.minPrice;
+const maxPrice = route.query.maxPrice; 
+const category = route.params.category
 
-const onChangePrice = () => {
-    router.push({
-      query: {
-        search: search,
-        minPrice: value.value[0],
-        maxPrice: value.value[1],
-      }
-    });
+if (minPrice || maxPrice) {
+  value.value[0] = minPrice
+  value.value[1]= maxPrice
 }
 
-const formattedValue = computed({
-  get() {
-    return [
-      separatePrice(value.value[0]),
-      separatePrice(value.value[1])
-    ];
-  },
-  set(newVal) {
-    value.value = [
-      Number(newVal[0].replace(/,/g, '')),
-      Number(newVal[1].replace(/,/g, ''))
-    ];
-  }
-});
+const minInput = ref(separatePrice(value.value[0]))
+const maxInput = ref(separatePrice(value.value[1]))
 
+watch(value, (newVal) => {
+  minInput.value = separatePrice(newVal[0])
+  maxInput.value = separatePrice(newVal[1])
+})
 
+watch([minInput, maxInput], ([min, max]) => {
+  value.value = [
+    Number(min.replace(/,/g, '')),
+    Number(max.replace(/,/g, ''))
+  ]
+})
+
+const link = computed(() => {
+  return search ? `/category/${category}?search=${search}&minPrice=${value.value[0]}&maxPrice=${value.value[1]}` : `/category/${category}?minPrice=${value.value[0]}&maxPrice=${value.value[1]}`
+})
 </script>
 
 
@@ -53,7 +45,7 @@ const formattedValue = computed({
                 <div class="shadow-xl flex flex-col gap-2 rounded-xl p-2">
                     <h3 class="text-center underline underline-offset-12">دسته بندی ها</h3>
     
-                    <NuxtLink v-for="category in categories" :key="category.name" :to="`/category/${category.name}`" class="px-3 py-1 font-semibold hover:bg-indigo-200 rounded-md">
+                    <NuxtLink v-for="category in categories" :key="category.name" :to="`/category/${category.slug}`" class="px-3 py-1 font-semibold hover:bg-indigo-200 rounded-md">
                         {{ category.name }}
                     </NuxtLink>
                 </div>
@@ -67,14 +59,14 @@ const formattedValue = computed({
                     <div class="flex justify-between gap-2 my-4">
                         <div>
                             <span class="text-sm text-gray-500">حداکثر قیمت</span>
-                            <UInput :value="formattedValue[1]" @input="(e) => formattedValue[1] = e.target.value"/>
+                            <UInput v-model="maxInput"/>
                         </div>
                         <div>
                             <span class="text-sm text-gray-500">حداقل قیمت</span>
-                            <UInput :value="formattedValue[0]" @input="(e) => formattedValue[0] = e.target.value" />
+                            <UInput v-model="minInput" />
                         </div>
                     </div>
-                    <button @click="onChangePrice" class=" cursor-pointer p-2 rounded-full  text-center bg-indigo-400 hover:bg-indigo-500 text-white transition-all duration-300">اعمال</button>
+                    <button @click="navigateTo(link)" class=" cursor-pointer p-2 rounded-full  text-center bg-indigo-400 hover:bg-indigo-500 text-white transition-all duration-300">اعمال</button>
 
                 </div>
 

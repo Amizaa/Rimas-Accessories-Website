@@ -1,13 +1,7 @@
 <script setup lang="ts">
-const items = [
-  'https://picsum.photos/640/640?random=1',
-  'https://picsum.photos/640/640?random=2',
-  'https://picsum.photos/640/640?random=3',
-  'https://picsum.photos/640/640?random=4',
-  'https://picsum.photos/640/640?random=5',
-  'https://picsum.photos/640/640?random=6',
-  
-]
+const props = defineProps({
+  images: Array
+})
 
 const carousel = useTemplateRef('carousel')
 const activeIndex = ref(0)
@@ -30,7 +24,7 @@ function select(index: number) {
 
 
 const open = reactive(
-  Object.fromEntries(Array.from({ length: items.length }, (_, i) => [i, false]))
+  Object.fromEntries(Array.from({ length: props.images.length }, (_, i) => [i, false]))
 )
 
 function openModal(index: number) {
@@ -44,7 +38,7 @@ function openModal(index: number) {
     <UCarousel
       ref="carousel"
       v-slot="{ item, index }"
-      :items="items"
+      :items="images"
       :prev="{ onClick: onClickPrev,  class: 'cursor-pointer' }"
       :next="{ onClick: onClickNext,  class: 'cursor-pointer' }"
       class="w-full mx-auto"
@@ -57,12 +51,14 @@ function openModal(index: number) {
         variant="subtle"
         @click="openModal(index)"
       >
-        <img :src="item" class="rounded-lg w-full h-full" />
+      <div class="rounded-lg w-full h-90 bg-white relative overflow-hidden">
+        <img :src="item.url"  class="h-full w-full rounded-lg object-cover"/>
+      </div>
     </UButton>
 
     <UModal :ui="{ content:'max-w-2xl' }" :close="false" v-model:open="open[index]">
         <template #body>
-            <img :src="item" class="rounded-lg w-full h-full" />
+            <img :src="item.url" class="rounded-lg w-full h-full" />
         </template>
     </UModal>
 
@@ -70,13 +66,15 @@ function openModal(index: number) {
 
     <div class="flex gap-1 justify-between pt-4 max-w-xs mx-auto">
       <div
-        v-for="(item, index) in items"
+        v-for="(item, index) in images"
         :key="index"
         class="size-11 opacity-25 hover:opacity-100 transition-opacity cursor-pointer"
         :class="{ 'opacity-100': activeIndex === index }"
         @click="select(index)"
       >
-        <img :src="item" width="44" height="44" class="rounded-lg">
+        <div class="rounded-lg w-full h-10 bg-white relative overflow-hidden">
+          <img :src="item.url"  class="h-full w-full rounded-lg object-cover"/>
+        </div>
       </div>
     </div>
   </div>

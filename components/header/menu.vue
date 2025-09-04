@@ -22,23 +22,10 @@ import {
 } from '@heroicons/vue/24/outline'
 import { ChevronDownIcon} from '@heroicons/vue/20/solid'
 
-import Ankle from '~/assets/images/ankle.svg'
-import Bracelet from '~/assets/images/bracelet.svg'
-import Earrings from '~/assets/images/earrings.svg'
-import Jewerly from '~/assets/images/jewelry.svg'
-import Necklace from '~/assets/images/necklace.svg'
 import ShoppingCart from '~/assets/images/shopping_cart.svg'
 import SearchBar from './searchBar.vue'
 
-
-const categories = [
-  { name: 'گوشواره', description: 'زیباترین گوشواره ها', href: '#', icon: Earrings },
-  { name: 'گردنبند', description: 'با گردنبد های ما شیک شوید', href: '#', icon: Necklace },
-  { name: 'دستبند', description: 'مناسب دست های ظریف شما', href: '#', icon: Bracelet },
-  { name: 'پابند', description: 'اصیل و زیبا بمانید', href: '#', icon: Ankle },
-  { name: 'ست', description: 'برای پارتنر های عاشق', href: '#', icon: Jewerly },
-
-]
+const categories  = await useFetchCategories()
 
 const mobileMenuOpen = ref(false)
 </script>
@@ -73,18 +60,18 @@ const mobileMenuOpen = ref(false)
           </PopoverButton>
           
           <transition enter-active-class="transition ease-out duration-200" enter-from-class="opacity-0 translate-y-1" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition ease-in duration-150" leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-1">
-            <PopoverPanel class="absolute left-1/2 z-10 mt-3 w-screen max-w-md -translate-x-1/2 overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
+            <PopoverPanel class="absolute left-1/2 z-10 mt-3 w-50 max-w-md -translate-x-1/2 overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
               <div class="p-4">
                 <div v-for="item in categories" :key="item.name" class="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm/6 hover:bg-gray-50">
                   <!-- <div class="flex size-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
                     <component :is="item.icon" class="size-6 text-gray-600 blue group-hover:fill-indigo-600" aria-hidden="true" />
                   </div> -->
                   <div class="flex-auto hover:text-indigo-600">
-                    <a :href="`/category/${item.name}`" class="block font-semibold text-gray-900 hover:text-indigo-600">
+                    <a :href="`/category/${item.slug}`" class="block font-semibold text-gray-900 hover:text-indigo-600">
                       {{ item.name }}
                       <span class="absolute inset-0" />
                     </a>
-                    <p class="mt-1 text-gray-600">{{ item.description }}</p>
+                    
                   </div>
                 </div>
               </div>
@@ -169,7 +156,7 @@ const mobileMenuOpen = ref(false)
                       leave-from-class="transform scale-100 opacity-100"
                       leave-to-class="transform scale-95 opacity-0">
                     <DisclosurePanel class="mt-2 space-y-2">
-                      <DisclosureButton v-for="item in [...categories]" :key="item.name" as="a" :href="`/category/${item.name}`" class="block rounded-lg py-2 pr-3 pl-6 text-sm/7 font-semibold text-gray-900 hover:bg-gray-50">{{ item.name }}</DisclosureButton>
+                      <DisclosureButton v-for="item in [...categories]" :key="item.name" as="a" :href="`/category/${item.slug}`" class="block rounded-lg py-2 pr-3 pl-6 text-sm/7 font-semibold text-gray-900 hover:bg-gray-50">{{ item.name }}</DisclosureButton>
                     </DisclosurePanel>
                 </transition>
                 </Disclosure>

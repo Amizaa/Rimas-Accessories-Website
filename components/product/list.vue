@@ -1,31 +1,75 @@
 <script setup>
-    const { products } = useProducts() // Assume this returns all products
     const route = useRoute()
-
+    
     const category = route.params.category == 'all' ? 'همه محصولات' : `دسته بندی ${route.params.category}`
+    const products = ref([])
+
+watch(
+  () => [route.query, route.params],
+  async () => {
+    const updatedParams = {}
+
+    if (route.params.category !== 'all') {
+      updatedParams.category = route.params.category
+    }
+
+    if (route.query.search) {
+      updatedParams.search = route.query.search
+    }
+
+    if (route.query.minPrice || route.query.maxPrice) {
+      updatedParams.minPrice = route.query.minPrice
+      updatedParams.maxPrice = route.query.maxPrice
+    }
+
+    products.value = await useFetchProducts(updatedParams)
+  },
+  { immediate: true, deep: true }
+)
 
     const itemsPerPage = 3
     const page = ref(1)
 
-    
-    const search = computed(() => {
-      return route.query.search
+    const sortItems = ref([
+  {
+    label: 'جدید ترین',
+    value: 'date-desc'
+  },
+  {
+    label: 'ارزان ترین',
+    value: 'price-asc'
+  },
+  {
+    label: 'گران ترین',
+    value: 'price-desc'
+  },
+
+])
+    const sortBy = ref('date-desc')
+
+  const sortedProducts = computed(() => {
+    return [...products.value].sort((a, b) => {
+      switch (sortBy.value) {
+        case 'date-desc':
+          return new Date(b.add_date) - new Date(a.add_date)
+        case 'price-desc':
+          return (b.price* (1 - b.discount / 100)) - (a.price* (1 - a.discount / 100))
+        case 'price-asc':
+          return (a.price* (1 - a.discount / 100)) - (b.price* (1 - b.discount / 100))
+        default:
+          return 0
+          }
+        })
     })
 
 
-    // Slice products based on current page
-    const paginatedProducts = computed(() => {
-        const start = (page.value - 1) * itemsPerPage
-        const end = start + itemsPerPage
-        return products.slice(start, end)
-    })
-    
-    const priceRange = computed(() => {
-        const minPrice = route.query.minPrice;
-        const maxPrice = route.query.maxPrice;
+const paginatedProducts = computed(() => {
+  const start = (page.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return sortedProducts.value.slice(start, end)
+})
 
-        return {minPrice,maxPrice}
-    })
+
 
 </script>
 
@@ -39,6 +83,10 @@
         <h1 class="text-xl text-center text-red-900">محصولی برای نمایش وجود ندارد</h1>
     </div>
     <div v-else class="p-2 md:p-4">
+        <div class="flex justify-start gap-2 my-5 items-center">
+          <span class=" text-sm font-semibold">مرتب سازی بر اساس: </span>
+          <USelect v-model="sortBy" :items="sortItems" class="w-48" />
+        </div>
         <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             <li v-for="(product, index) in paginatedProducts" :key="index">
             <ProductCard :item="product" class="w-full shadow-tag" />

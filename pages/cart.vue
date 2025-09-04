@@ -2,72 +2,101 @@
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import { priceToPersianWords, separatePrice } from 'price-seprator';
 import ShoppingCart from '~/assets/images/shopping_cart.svg'
-import products from '~/api/products.json'
 
-  useHead({
-      title: 'سبد خرید'
-  })
+useHead({
+  title: 'سبد خرید'
+})
 
-const toast = useToast()
+const shippingOptions = ref([
+  {
+    label: 'شرکت پست',
+    value: 'post',
+    description: 'تحویل در 5 الی 7 روز کاری',
+    ui:{wrapper:'cursor-pointer'},
+    price: 45000
+  },
+  {
+    label: 'تیپاکس',
+    value: 'tipax',
+    description: 'تحویل در 3 الی 5 روز کاری',
+    ui:{wrapper:'cursor-pointer'},
+    price: 65000
+  },
+])
 
-  const promoCode = ref()
-  const promoMessage = ref("") 
-  const promoValid = ref(false)
-  const discount = ref(0)
-  const freeDelivery = ref(false)
 
-  const promoValidation = () => {
-    const result = usePromoCode(promoCode.value)  // Assuming promoCode is a ref
+const { cart, updateCartItem, removeFromCart, updateShipping } = useCart()
+const cartStore = useCart()
 
-    promoMessage.value = result.promoMessage
-    promoValid.value = result.promoValid
-    discount.value = (subtotal.value * result.discount) / 100
-    freeDelivery.value = result.freeDelivery
+onMounted(() => {
+  const cartCookie = useCookie('cart')
+  const shippingCookie = useCookie('shipping')
+  
+  if (cartCookie.value) {
+    try {
+      cartStore.cart = cartCookie.value
+      cartStore.shipping = shippingCookie.value
+    } catch (e) {
+      cartStore.cart = []
+      cartStore.shipping = {name:''}
+    }
+  }
+  
+})
 
-    if (!promoValid.value) {
-      toast.add({
-      title: promoMessage.value,
-      description: 'دوباره امتحان کنید',
-      color: 'error'
-    })
-    }else{
-      toast.add({
-      title: promoMessage.value,
-      color: 'success'
-    })
+
+const shippingOption = computed(() => cartStore.shipping?.name || '')
+
+const productIds = [...new Set(cartStore.cart.map(item => item.productId))].join(',')
+
+const products = await useFetchProducts({ids:productIds})
+
+const cartItems = computed(() => {
+  return cartStore.cart.map(item => {
+    const product = products.find(p => p.id === item.productId)
+    if (!product) return null
+    
+    const variant = product.variants.find(v => v.id === item.variantId)
+    
+    // determine price (variant price or product price)
+    const basePrice = variant && variant.price !== null ? parseFloat(variant.price) : parseFloat(product.price)
+    const finalPrice = product.discount > 0 ? basePrice * (1 - product.discount / 100) : basePrice
+
+    if (item.quantity > variant?.stock) {
+      item.quantity = variant?.stock
+      handleUpdate(item, item.quantity) 
     }
 
-  }
-
-      
-  const delivryOptions = ref([
-    {
-      label: 'شرکت پست',
-      value: 'post',
-      description: 'تحویل در 5 الی 7 روز کاری',
-      ui:{wrapper:'cursor-pointer'},
-      price: 45000
-    },
-    {
-      label: 'تیپاکس',
-      value: 'tipax',
-      description: 'تحویل در 3 الی 5 روز کاری',
-      ui:{wrapper:'cursor-pointer'},
-      price: 65000
-    },
-  ])
-
     
-const deliveryOption = ref('post')
+    return {
+      productId: product.id,
+      productTitle: product.title,
+      image: product.images[0].url,
+      variantId: variant?.id || null,
+      variantTitle: variant?.title || "Default",
+      quantity: item.quantity,
+      stock: variant?.stock,
+      unitPrice: finalPrice,
+      totalPrice: finalPrice * item.quantity
+    }
+  }).filter(Boolean)
+}) 
 
-const colorItems = ref(['گلد', 'آویز', 'دنجر', 'فلش بک'])
-const modelItems = ref(['گلد', 'آویز', 'دنجر', 'فلش بک'])
-const sizeItems = ref(['گلد', 'آویز', 'دنجر', 'فلش بک'])
 
 
+const subtotal = computed (() => {
+  return cartItems.value.reduce((sum, item) => sum + item.totalPrice, 0);
+})
+
+const shippingCost = computed(() => {
+  const selected = shippingOptions.value.find(opt => opt.value === shippingOption.value);
+  return selected?.price ?? 0;
+});
 
 
-const { cart, updateCartItem, removeFromCart } = useCart()
+const total = computed(() => {
+  return subtotal.value + shippingCost.value 
+})
 
 
 function handleUpdate(item, value) {
@@ -79,46 +108,10 @@ function handleUpdate(item, value) {
     updateCartItem(original, updates)
 }
 
-onMounted(() => {
-  const cartCookie = useCookie('cart')
-  if (cartCookie.value) {
-    try {
-      cartStore.cart = cartCookie.value
-    } catch (e) {
-      cartStore.cart = []
-    }
-  }
-})
-
-const cartStore = useCart()
-
-const cartItems = computed(() =>
-cartStore.cart.map(cartItem => {
-  const productDetail = products.find(p => p.id == cartItem.id)
-  return {
-      ...cartItem,
-      productDetail
-    }
-  })
-)
-
-const subtotal = computed (() => {
- return cartItems.value.reduce((sum, item) => sum + (( item.productDetail.price * (100 - item.productDetail.discount) ) / 100) * item.quantity, 0);
-})
-
-const deliveryCost = computed(() => {
-  if (freeDelivery.value) {
-    return 0
-  }
-  const selected = delivryOptions.value.find(opt => opt.value === deliveryOption.value);
-  return selected?.price ?? 0;
-});
-
-
-const total = computed(() => {
-  return subtotal.value + deliveryCost.value - discount.value
-})
-
+function handleUpdateShipping(val) {
+  const selected = shippingOptions.value.find(opt => opt.value === val);
+  updateShipping({name: selected.value, price: selected.price})
+}
 </script>
 
 <template>
@@ -148,9 +141,9 @@ const total = computed(() => {
             <div v-for="(item, index) in cartItems" :key="index" class="bg-white rounded-lg shadow-md p-4 mb-4">
             <div class="flex justify-between items-start">
                 <div class="flex items-start space-x-3">
-                <img :src="item.productDetail.image" alt="Product" class="w-20 h-20 object-cover rounded">
+                <img :src="item.image" :alt="`${item.productTitle} - ${item.variantTitle}`" class="w-20 h-20 object-cover rounded">
                 <div>
-                    <h2 class="font-semibold text-lg">{{item.productDetail.title}}</h2>
+                    <h2 class="font-semibold text-lg">{{item.productTitle}}</h2>
                 </div>
                 </div>
                 <button @click="removeFromCart(index)" class="text-red-500 hover:text-red-700 cursor-pointer">
@@ -159,58 +152,47 @@ const total = computed(() => {
             </div>
             
             <div class="mt-4 space-y-2">
+              <div class="flex justify-between">
+                <span class="text-gray-600">{{ item.variantTitle }}</span>
+              </div>
                 <div class="flex justify-between">
-                <span class="text-gray-600">کد:</span>
-                <span >{{item.id}}</span>
+                  <span class="text-gray-600">کد محصول:</span>
+                  <span >{{item.productId}}</span>
                 </div>
-                
-
-                    <div class="flex items-center">
-                      <span class="text-sm text-gray-600 ml-2">رنگ:</span>
-                      <CartSelect :value="item.color" :items="colorItems" field="color" :cart-item="item" class="w-full" />
-                    </div>
-                    <div class="flex items-center">
-                    <span class="text-sm text-gray-600 ml-2">مدل:</span>
-                      <CartSelect :value="item.model" :items="modelItems" field="model" :cart-item="item"  class="w-full" />
-                    </div>
-                    <div class="flex items-center">
-                    <span class="text-sm text-gray-600 ml-2 ">سایز:</span>
-                      <CartSelect :value="item.size" :items="sizeItems" field="size" :cart-item="item"  class="w-full" />
-                    </div>
 
                 
                 <div class="flex justify-between items-center">
                 <span class="text-gray-600">تعداد:</span>
                 <div class="flex items-center">
                   <UInputNumber
-                              v-model="item.quantity"
-                              :increment="{
-                                color: 'neutral',
-                                class: 'cursor-pointer',
-                                size: 'sm'
-                              }"
-                              :decrement="{
-                                color: 'neutral',
-                                class: 'cursor-pointer',
-                                size: 'sm'
-                              }"
-                              :min="1" :max="item.productDetail.quantity"
-                              size="sm"
-                              color="neutral" highlight
-                              @update:modelValue="val => handleUpdate(item, val)"
-                            />
+                          v-model="item.quantity"
+                          :increment="{
+                            color: 'neutral',
+                            class: 'cursor-pointer',
+                            size: 'sm'
+                          }"
+                          :decrement="{
+                            color: 'neutral',
+                            class: 'cursor-pointer',
+                            size: 'sm'
+                          }"
+                          :min="1" :max="item.stock"
+                          size="sm"
+                          color="neutral" highlight
+                          @update:modelValue="val => handleUpdate(item, val)"
+                        />
                 </div>
                 </div>
             
                 
                 <div class="flex justify-between font-medium">
                 <span>قیمت:</span>
-                <span>{{separatePrice((item.productDetail.price * (100 - item.productDetail.discount)) / 100 )}} تومان</span>
+                <span>{{separatePrice(item.unitPrice)}} تومان</span>
                 </div>
                 
                 <div class="flex justify-between font-bold">
                 <span>قیمت کل:</span>
-                <span>{{separatePrice((( item.productDetail.price * (100 - item.productDetail.discount) ) / 100) * item.quantity)}} تومان</span>
+                <span>{{separatePrice(item.totalPrice)}} تومان</span>
                 </div>
                 
             </div>
@@ -223,8 +205,7 @@ const total = computed(() => {
                 <table class="w-full bg-white rounded-lg shadow-md overflow-hidden" v-if="cartItems.length > 0">
                 <thead class="bg-gray-50 text-gray-700">
                     <tr>
-                    <th class="py-3 px-4 ">محصول</th>
-                    <th class="py-3 px-4 t">جزئیات</th>
+                    <th class="py-3 px-4 ">جزئیات محصول</th>
                     <th class="py-3 px-4 ">تعداد</th>
                     <th class="py-3 px-4 text-right">قیمت</th>
                     <th class="py-3 px-4 text-right">قیمت کل</th>
@@ -235,26 +216,11 @@ const total = computed(() => {
                     <tr v-for="(item, index) in cartItems" :key="index" class="border-t border-gray-200 hover:bg-gray-50 transition">
                         <td class="py-4 px-4">
                             <div class="flex items-center space-x-3">
-                                <img :src="item.productDetail.image" alt="Product" class="w-20 h-20 object-cover rounded">
+                                <img :src="item.image" :alt="`${item.productTitle} - ${item.variantTitle}`" class="w-20 h-20 object-cover rounded">
                                 <div>
-                                <h3 class="font-medium">{{item.productDetail.title}}</h3>
-                                <p class="text-xs text-gray-500">کد: {{item.id}}</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="py-4 px-4">
-                            <div class="space-y-2">
-                                <div class="flex items-center">
-                                  <span class="text-sm text-gray-600 mx-2">رنگ:</span>
-                                  <CartSelect :value="item.color" :items="colorItems" field="color" :cart-item="item"   class="w-full" />
-                                </div>
-                                <div class="flex items-center">
-                                <span class="text-sm text-gray-600 mx-2">مدل:</span>
-                                  <CartSelect :value="item.model" :items="modelItems" field="model" :cart-item="item"   class="w-full" />
-                                </div>
-                                <div class="flex items-center">
-                                <span class="text-sm text-gray-600 mx-2">سایز:</span>
-                                  <CartSelect :value="item.size" :items="sizeItems" field="size" :cart-item="item"   class="w-full" />
+                                <h3 class="font-medium">{{item.productTitle}}</h3>
+                                <p class="text-sm text-gray-600 mb-2">{{item.variantTitle}}</p>
+                                <p class="text-xs text-gray-500">کد محصول: {{item.productId}}</p>
                                 </div>
                             </div>
                         </td>
@@ -272,7 +238,7 @@ const total = computed(() => {
                                 class: 'cursor-pointer',
                                 size: 'sm'
                               }"
-                              :min="1" :max="item.productDetail.quantity"
+                              :min="1" :max="item.stock"
                               size="sm"
                               color="neutral" highlight
                               @update:modelValue="val => handleUpdate(item, val)"
@@ -280,22 +246,15 @@ const total = computed(() => {
                           </div>      
                         </td>
                         <td class="py-4 px-4 text-right">
-                            <span class="font-medium">{{separatePrice(( item.productDetail.price * (100 - item.productDetail.discount) ) / 100)}} تومان</span>
+                            <span class="font-medium">{{separatePrice( item.unitPrice)}} تومان</span>
                         </td>
                         <td class="py-4 px-4 text-right">
-                            <span class="font-bold">{{separatePrice((( item.productDetail.price * (100 - item.productDetail.discount) ) / 100) * item.quantity)}} تومان</span>
+                            <span class="font-bold">{{separatePrice(item.totalPrice)}} تومان</span>
                         </td>
                         <td class="py-4 px-4 text-center">
                             <button @click="removeFromCart(index)" class=" cursor-pointer text-red-500 hover:text-red-700 p-1">
                                 <TrashIcon class="w-8"/>
                             </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class=" w-full" colspan="6">
-                          <div class="flex justify-center w-full">
-                            <button class=" rounded-full bg-indigo-400 hover:bg-indigo-500 transition-all cursor-pointer my-5 p-3 text-white">بروزرسانی سبد خرید</button>
-                          </div>
                         </td>
                     </tr>
                   </tbody>
@@ -310,30 +269,11 @@ const total = computed(() => {
           <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6">
             <h2 class="text-lg font-semibold mb-4">گزینه های ارسال</h2>
             <div class="space-y-3">
-                <URadioGroup v-model="deliveryOption" size="xl" indicator="hidden" variant="card" default-value="post" :items="delivryOptions" />
+                <URadioGroup v-model="shippingOption" size="xl" indicator="hidden" variant="card" default-value="post" :items="shippingOptions" @update:modelValue="val => handleUpdateShipping(val)" />
             </div>
           </div>
-          
-          <!-- Promo Code -->
-          <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
-            <h2 class="text-lg font-semibold mb-4">کد تخفیف</h2>
-            <div class="flex">
-              <input 
-                type="text" 
-                v-model="promoCode" 
-                placeholder="کد تخفیف خود را وارد کنید" 
-                class="flex-grow border rounded-r-2xl p-2"
-              >
-              <button @click="promoValidation()"
-                class="bg-indigo-400 text-white px-4 py-2 rounded-l-2xl hover:bg-indigo-500 transition-all duration-300 cursor-pointer"
-              >
-                اعمال کد تخفیف
-              </button>
-            </div>
-            <div class="mt-2 text-sm" :class="promoValid ? 'text-green-600' : 'text-red-600'">
-              <span >{{promoMessage}}</span>
-            </div>
-          </div>
+        
+
         </div>
         
         <!-- Order Total -->
@@ -347,11 +287,7 @@ const total = computed(() => {
               </div>
               <div class="flex justify-between">
                 <span class="text-gray-600">هزینه ارسال</span>
-                <span class="font-medium">{{separatePrice(deliveryCost)}} تومان</span>
-              </div>
-              <div v-if="discount != 0"  class="flex justify-between text-green-600">
-                <span>تخفیف</span>
-                <span class="font-medium">{{separatePrice(discount)}}- تومان</span>
+                <span class="font-medium">{{separatePrice(shippingCost)}} تومان</span>
               </div>
               <div class="border-t pt-3 mt-3">
                 <div class="flex justify-between font-bold text-lg">

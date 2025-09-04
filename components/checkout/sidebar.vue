@@ -3,13 +3,33 @@ import { separatePrice,priceToPersianWords } from 'price-seprator'
 
     const props = defineProps({
         subtotal: Number,
-        deliveryCost: Number,
-        discount: Number
+        shipping: Object,
+        promo: Object,
+    })
+
+    const discount = computed(() => {
+      if (props.promo.discount) {
+        return props.subtotal * (props.promo.discount / 100)
+      }
+      return 0
+    })
+    
+    const shippingCost = computed(() => {
+      if (props.promo.freeShipping) {
+        return 0
+      }
+      return props.shipping.price
     })
 
     const total = computed(() => {
-        return props.subtotal + props.deliveryCost - props.discount
+        return props.subtotal + shippingCost.value - discount.value
     })
+
+const emit = defineEmits(['checkout'])
+
+function handleOrderSubmit() {
+  emit('checkout')
+}
 </script>
 
 <template>
@@ -21,11 +41,14 @@ import { separatePrice,priceToPersianWords } from 'price-seprator'
                 <span class="font-medium">{{separatePrice(subtotal)}} تومان</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-gray-600">هزینه ارسال</span>
-                <span class="font-medium">{{separatePrice(deliveryCost)}} تومان</span>
+                <span class="text-gray-600">هزینه ارسال 
+                  <span v-if="promo.freeShipping" class=" text-sm text-green-500">(ارسال رایگان)</span>
+                  <span v-else class=" text-sm text-gray-500">({{shipping.name=='post' ? 'پست' : 'تیپاکس'}})</span>
+                </span>
+                <span class="font-medium">{{promo.freeShipping ? 0 : separatePrice(shipping.price)}} تومان</span>
               </div>
               <div v-if="discount != 0"  class="flex justify-between text-green-600">
-                <span>تخفیف</span>
+                <span>{{ promo.title }}</span>
                 <span class="font-medium">{{separatePrice(discount)}}- تومان</span>
               </div>
               <div class="border-t pt-3 mt-3">
@@ -38,7 +61,7 @@ import { separatePrice,priceToPersianWords } from 'price-seprator'
                 </div>
               </div>
             </div>
-                <button 
+                <button type="submit" @click="handleOrderSubmit"
                 class="w-full cursor-pointer bg-indigo-400 text-white py-3 rounded-lg font-medium hover:bg-indigo-500 transition flex items-center justify-center"
                 >
                     نهایی سازی سفارش 
