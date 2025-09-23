@@ -97,11 +97,13 @@ export default function useUser(userId) {
       const { data: userData, error: fetchError } = await useFetch(`${url}me/`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-
+      
       if (fetchError.value) {
         // If access token is expired, try refresh
         if (fetchError.value.statusCode === 401) {
+
           const newToken = await refreshToken()
+          console.log(newToken);
           if (!newToken) throw new Error("Session expired. Please login again.")
 
           // Retry fetching user with new access token
@@ -133,16 +135,17 @@ export default function useUser(userId) {
     if (!refresh) return null
 
     try {
-      const { data, error: refreshError } = await $fetch(`${url}token/refresh/`, {
+
+      const { data, error: refreshError } = await useFetch(`${url}token/refresh/`, {
         method: "POST",
         body: { refresh },
       })
 
-      if (refreshError) throw refreshError
+      if (refreshError.value) throw refreshError
 
-      if (data?.access) {
-        localStorage.setItem("access", data.access)
-        return data.access
+      if (data?.value.access) {
+        localStorage.setItem("access", data.value.access)
+        return data.value.access
       }
       return null
     } catch (err) {

@@ -24,7 +24,7 @@ const phoneError = computed(() => {
 
 
 const user = ref(null)
-// const loading = ref(true)
+const loading = ref(true)
 onMounted(async () => {
   const { default: Joi } = await import('joi'); 
   
@@ -38,12 +38,11 @@ onMounted(async () => {
     
   });
   user.value = await fetchAuthenticatedUser()
-  // loading.value = false;
+  loading.value = false;
 });
 
 
 const pincode = ref()
-const code = ref()
 const codeError = ref(false)
 
 const progress = ref(0)

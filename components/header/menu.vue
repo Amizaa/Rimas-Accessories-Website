@@ -33,10 +33,10 @@ const mobileMenuOpen = ref(false)
 <template>
   <header class="bg-white sticky top-0 shadow z-50">
     <div class="flex lg:hidden w-full justify-center my-4">
-      <a href="/" class="-m-1.5 p-1.5">
+      <NuxtLink href="/" class="-m-1.5 p-1.5">
         <span class="sr-only">ریماس اکسسوری</span>
         <img class="h-14 w-auto" :src='Logo' alt="لوگوی ریماس اکسسوری" />
-      </a>
+      </NuxtLink>
       <div class="flex lg:hidden absolute right-6">
         <button type="button" class="  my-auto h-1/2 cursor-pointer -m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700" @click="mobileMenuOpen = true">
           <span class="sr-only">باز کردن منوی اصلی</span>
@@ -46,10 +46,10 @@ const mobileMenuOpen = ref(false)
     </div>
     <nav class="mx-auto flex max-w-8xl items-center justify-between p-2 lg:px-8" aria-label="Global">
       <div class="hidden lg:flex-1 lg:flex">
-        <a href="/" class="-m-1.5 p-1.5">
+        <NuxtLink to="/" class="-m-1.5 p-1.5">
           <span class="sr-only">ریماس اکسسوری</span>
           <img class="h-10 w-auto" :src="Logo" alt="لوگوی ریماس اکسسوری" />
-        </a>
+        </NuxtLink> 
       </div>
 
       <PopoverGroup class="hidden lg:flex lg:gap-x-12">
@@ -67,28 +67,28 @@ const mobileMenuOpen = ref(false)
                     <component :is="item.icon" class="size-6 text-gray-600 blue group-hover:fill-indigo-600" aria-hidden="true" />
                   </div> -->
                   <div class="flex-auto hover:text-indigo-600">
-                    <a :href="`/category/${item.slug}`" class="block font-semibold text-gray-900 hover:text-indigo-600">
+                    <NuxtLink :to="`/category/${item.slug}`" class="block font-semibold text-gray-900 hover:text-indigo-600">
                       {{ item.name }}
                       <span class="absolute inset-0" />
-                    </a>
+                    </NuxtLink>
                     
                   </div>
                 </div>
               </div>
               <div class="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
-                <a v-for="item in callsToAction" :key="item.name" :href="`/category/${item.name}`" class="flex items-center justify-center gap-x-2.5 p-3 text-sm/6 font-semibold text-gray-900 hover:bg-gray-100">
+                <NuxtLink v-for="item in callsToAction" :key="item.name" :to="`/category/${item.name}`" class="flex items-center justify-center gap-x-2.5 p-3 text-sm/6 font-semibold text-gray-900 hover:bg-gray-100">
                   <component :is="item.icon" class="size-5 flex-none text-gray-400" aria-hidden="true" />
                   {{ item.name }}
-                </a>
+                </NuxtLink>
               </div>
             </PopoverPanel>
           </transition>
         </Popover>
         
-        <a href="/blog" class="text-sm/6 font-semibold text-gray-900">وبلاگ</a>
-        <a href="#" class="text-sm/6 font-semibold text-gray-900">پیشنهادات</a>
-        <a href="/about-us" class="text-sm/6 font-semibold text-gray-900">درباره ما</a>
-        <a href="/contact-us" class="text-sm/6 font-semibold text-gray-900">تماس با ما</a>
+        <NuxtLink to="/blog" class="text-sm/6 font-semibold text-gray-900">وبلاگ</NuxtLink>
+        <NuxtLink to="#" class="text-sm/6 font-semibold text-gray-900">پیشنهادات</NuxtLink>
+        <NuxtLink to="/about-us" class="text-sm/6 font-semibold text-gray-900">درباره ما</NuxtLink>
+        <NuxtLink to="/contact-us" class="text-sm/6 font-semibold text-gray-900">تماس با ما</NuxtLink>
       </PopoverGroup>
 
       <div class="flex flex-3 lg:flex-1 justify-center w-full">
@@ -98,9 +98,9 @@ const mobileMenuOpen = ref(false)
       <div class="flex justify-end items-center space-x-4">
         <HeaderLogin />
         <USeparator orientation="vertical" class="h-10" />
-        <a href="/cart">
+        <NuxtLink to="/cart">
           <ShoppingCart class="text-sm/6 size-7 cursor-pointer hover:fill-blue-600"/>
-        </a>
+        </NuxtLink>
       </div>
     </nav>
 
@@ -130,10 +130,10 @@ const mobileMenuOpen = ref(false)
           >
         <DialogPanel class="fixed inset-y-0 -right-100 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div class="flex items-center justify-between">
-            <a href="#" class="-m-1.5 p-1.5">
+            <NuxtLink to="/" class="-m-1.5 p-1.5">
               <span class="sr-only">ریماس اکسسوری</span>
               <img class="h-8 w-auto" :src="Logo" alt="" />
-            </a>
+            </NuxtLink>
             <button type="button" class=" cursor-pointer -m-2.5 rounded-md p-2.5 text-gray-700" @click="mobileMenuOpen = false">
               <span class="sr-only">بستن منو</span>
               <XMarkIcon class="size-6" aria-hidden="true" />
@@ -156,14 +156,14 @@ const mobileMenuOpen = ref(false)
                       leave-from-class="transform scale-100 opacity-100"
                       leave-to-class="transform scale-95 opacity-0">
                     <DisclosurePanel class="mt-2 space-y-2">
-                      <DisclosureButton v-for="item in [...categories]" :key="item.name" as="a" :href="`/category/${item.slug}`" class="block rounded-lg py-2 pr-3 pl-6 text-sm/7 font-semibold text-gray-900 hover:bg-gray-50">{{ item.name }}</DisclosureButton>
+                      <DisclosureButton v-for="item in [...categories]" :key="item.name" as="NuxtLink" :to="`/category/${item.slug}`" class="block rounded-lg py-2 pr-3 pl-6 text-sm/7 font-semibold text-gray-900 hover:bg-gray-50">{{ item.name }}</DisclosureButton>
                     </DisclosurePanel>
                 </transition>
                 </Disclosure>
-                <a href="/blog" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">وبلاگ</a>
-                <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">پیشنهادات</a>
-                <a href="/about-us" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">درباره ما</a>
-                <a href="/contact-us" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">تماس با ما</a>
+                <NuxtLink to="/blog" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">وبلاگ</NuxtLink>
+                <NuxtLink to="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">پیشنهادات</NuxtLink>
+                <NuxtLink to="/about-us" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">درباره ما</NuxtLink>
+                <NuxtLink to="/contact-us" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">تماس با ما</NuxtLink>
               </div>
             </div>
           </div>
