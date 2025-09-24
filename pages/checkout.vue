@@ -37,11 +37,10 @@
         return subtotal.value + shippingCost.value
     })
 
-    const {saveOrder} = await useSaveOrder()
+    const {saveOrder} = await useOrder()
 
  async function handleSaveOrder(formData) {
     const payload = {
-      user: 1, // current logged in user
       address: parseInt(formData.selectedAddress), // selected address id
       shipping_method: shipping.value.name,
       total_amount: total.value,

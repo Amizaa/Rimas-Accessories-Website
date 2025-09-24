@@ -5,6 +5,17 @@
         {title: 'آدرس های من', href: '/address'},
         {title: 'کد های تخفیف من', href: '/promoCodes'},
     ]
+
+    const router = useRouter()
+
+    function logoutUser() {
+
+    localStorage.removeItem("access")
+    localStorage.removeItem("refresh")
+
+
+    router.push("/")
+  }
 </script>
 
 <template>
@@ -15,7 +26,7 @@
                     {{ page.title }}
                 </NuxtLink>
                 <USeparator />
-                <NuxtLink to="#" class="px-3 py-1 font-semibold hover:bg-red-200 rounded-md">خروج از حساب کاربری</NuxtLink>
+                <button @click="logoutUser" class="px-3 py-1 font-semibold hover:bg-red-200 rounded-md cursor-pointer">خروج از حساب کاربری</button>
             </div>
         </div>
     </aside>

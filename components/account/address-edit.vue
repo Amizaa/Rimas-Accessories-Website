@@ -2,17 +2,19 @@
 import { EnvelopeIcon, MapPinIcon, PhoneIcon, UserCircleIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
-  receivers: Object
+    addresses: Array
 })
 
 const state = reactive({
-    address: undefined,
+    id:undefined,
+    detail: undefined,
     province: undefined,
     city: undefined,
     postCode: undefined,
     receiverPhone: undefined,
     receiverName: undefined,
 });
+
 
 
 const schema = ref(null); // Use ref so it's reactive
@@ -31,10 +33,10 @@ onMounted(async () => {
         'string.empty': 'شماره همراه نمی‌تواند خالی باشد',
         'any.required': 'لطفا شماره همراه گیرنده را وارد کنید',
         }),
-        address: Joi.string().required().label('آدرس').messages({
+        detail: Joi.string().required().label('آدرس').messages({
         'string.base': 'آدرس باید یک رشته باشد',
-        'string.empty': 'آدرس نمی‌تواند خالی باشد',
-        'any.required': 'لطفا آدرس خود را وارد کنید',
+        'string.empty': 'جزئیات آدرس نمی‌تواند خالی باشد',
+        'any.required': 'لطفا  جزئیات آدرس خود را وارد کنید',
         }),
         province: Joi.string().required().label('استان').label('استان')
         .messages({
@@ -52,6 +54,7 @@ onMounted(async () => {
         }),
                 
         });
+        
 });
 
 
@@ -72,15 +75,41 @@ watch(() => state.province, () => {
 
 const showModal = ref(false)
 
-const openModal = (receiver) => {
+const openModal = (address) => {
     showModal.value = true
 
-    state.receiverName = receiver.receiverName
-    state.receiverPhone = receiver.receiverPhone
-    state.address = receiver.address
-    state.province = receiver.province
-    state.city = receiver.city
-    state.postCode = receiver.postCode
+    state.receiverName = address.receiver_name
+    state.receiverPhone = address.receiver_phone
+    state.detail = address.address_detail
+    state.province = address.province
+    state.city = address.city
+    state.postCode = address.postal_code
+    state.id = address.id
+}
+
+const toast = useToast()
+
+const {updateAddress} = await useSaveAddress()
+
+const updateAddressHandler = async(addressId) =>{
+    const payload = {
+      receiver_name: state.receiverName,
+      receiver_phone: state.receiverPhone,
+      address_detail: state.detail,
+      province: state.province,
+      city: state.city,
+      postal_code: state.postCode,
+    };
+    
+    const result = await updateAddress(parseInt(addressId), payload);
+    if (result.success) {
+      open.value = false;
+      toast.add({ title: 'بروزرسانی آدرس', description: 'آدرس با موفقیت بروزرسانی شد', color: 'success' })
+        window.location.reload()
+    } else {
+      toast.add({ title: 'خطا', description: 'دوباره تلاش کنید', color: 'error' })
+    }
+    
 }
 
 </script>
@@ -88,22 +117,22 @@ const openModal = (receiver) => {
 
 <template>
     <div class="grid grid-cols-3 gap-4 mt-3">
-        <div @click="openModal(receiver)" v-for="(receiver,index) in receivers" :key="index" class=" col-span-3 lg:col-span-1 p-2 shadow bg-gray-100 rounded-lg space-y-3 cursor-pointer hover:scale-105 transition-all">
+        <div @click="openModal(address)" v-for="(address,index) in addresses" :key="index" class=" col-span-3 lg:col-span-1 p-2 shadow bg-gray-100 rounded-lg space-y-3 cursor-pointer hover:scale-105 transition-all">
             <span class=" space-x-2 flex items-center">
                 <UserCircleIcon class="w-6" />
-                <h3>{{receiver.receiverName}}</h3>
+                <h3>{{address.receiver_name}}</h3>
             </span>
             <span class=" space-x-2 flex items-center">
                 <PhoneIcon class="w-6" />
-                <h3>{{receiver.receiverPhone}}</h3>
+                <h3>{{address.receiver_phone}}</h3>
             </span>
             <span class=" space-x-2 flex items-center">
                 <MapPinIcon class="w-6" />
-                <h3 class=" line-clamp-1">{{receiver.address}}</h3>
+                <h3 class=" line-clamp-1">{{ address.city }}، {{address.address_detail}}</h3>
             </span>
             <span class=" space-x-2 flex items-center">
                 <EnvelopeIcon class="w-6" />
-                <h3>{{receiver.postCode}}</h3>
+                <h3>{{address.postal_code}}</h3>
             </span>
         </div>
     </div>
@@ -135,12 +164,12 @@ const openModal = (receiver) => {
             <UFormField class="col-span-2"  name="postCode" label="کد پستی">
                 <UInput placeholder="کد پستی 10 رقمی" class=" w-full" v-model="state.postCode" />
             </UFormField>
-            <UFormField class="col-span-4"  name="address" label="آدرس">
-                <UInput class=" w-full" v-model="state.address" />
+            <UFormField class="col-span-4"  name="detail" label="جزئیات آدرس">
+                <UInput class=" w-full" v-model="state.detail" />
             </UFormField>
         
             <div class="flex justify-center col-span-6 my-3">
-                <UButton type="submit" size="xl" class="cursor-pointer" label="ویرایش" color="primary" :disabled="error" />
+                <UButton type="submit" @click="updateAddressHandler(state.id)" size="xl" class="cursor-pointer" label="ویرایش" color="primary" :disabled="error" />
             </div>
         </UForm>
     </template>

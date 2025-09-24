@@ -206,7 +206,6 @@ const selectedProduct = ref(null)
 const showModal = ref(false)
 
 const openModal = (product) => {
-  console.log(product);
   selectedProduct.value = product
   showModal.value = true
 }

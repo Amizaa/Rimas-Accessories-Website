@@ -1,8 +1,10 @@
 <script setup>
 
 const props = defineProps({
-    user:Object
+    receiverPhone: String,
+    receiverName: String
 })
+
 
 const toast = useToast()
 
@@ -13,14 +15,10 @@ const state = reactive({
     province: undefined,
     city:undefined,
     postCode: undefined,
-    receiverPhone: undefined,
-    receiverName: undefined,
+    receiverPhone: props.receiverPhone,
+    receiverName: props.receiverName,
 });
 
-onMounted(async() => {
-  state.receiverPhone = props.user.phone
-  state.receiverName = `${props.user.first_name} ${props.user.last_name}`
-})
 
 
 const errors = reactive({
@@ -110,9 +108,7 @@ watch(() => state.province, () => {
 
 const {saveAddress} = await useSaveAddress()
 
-const emit = defineEmits(['addressAdded'])
-
-async function onSubmit() {
+async function saveAddressHandler() {
   const isValid = validateForm(state);
 
   if (!isValid) {
@@ -132,17 +128,17 @@ async function onSubmit() {
   const result = await saveAddress(payload);
   if (result.success) {
     open.value = false;
-    toast.add({ title: 'ذخیره آدرس', description: 'آدرس با موفقیت ذخیره شد', color: 'success' })
-    emit('addressAdded')
+    window.location.reload()
   } else {
     toast.add({ title: 'خطا', description: 'دوباره تلاش کنید', color: 'error' })
   }
+
 }
 </script>
 
 
 <template>
-  <UButton variant="link" @click="open = true" class="text-sm font-semibold text-indigo-500 hover:text-indigo-600 cursor-pointer" label=" + اضافه کردن آدرس جدید" color="neutral"  />
+  <UButton variant="link" @click="open = true" class="mt-4 text-sm font-semibold text-indigo-500 hover:text-indigo-600 cursor-pointer" label=" + اضافه کردن آدرس جدید" color="neutral"  />
   <UModal class=" my-3"
      title="اضافه کردن آدرس جدید"
     :close="{
@@ -155,7 +151,7 @@ async function onSubmit() {
 
     <template #body>
         <div v-if="open">
-            <UForm :state="state" class="space-y-4 space-x-3 grid grid-cols-6" @submit="onSubmit">
+            <UForm :state="state" class="space-y-4 space-x-3 grid grid-cols-6" >
                 <UFormField class="col-span-3"  name="receiverName" label="نام و نام خانوادگی گیرنده">
                     <UInput class=" w-full" v-model="state.receiverName" />
                     <span class="text-red-500 text-sm">{{ errors.receiverName }}</span>
@@ -182,7 +178,7 @@ async function onSubmit() {
                 </UFormField>
             
                 <div class="flex justify-center col-span-6 my-3">
-                   <UButton @click="onSubmit" type="submit" size="xl" class="cursor-pointer" color="primary" >
+                   <UButton @click="saveAddressHandler" type="submit" size="xl" class="cursor-pointer" color="primary" >
                         اضافه کردن آدرس جدید
                    </UButton>
                 </div>

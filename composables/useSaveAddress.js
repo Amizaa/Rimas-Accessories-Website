@@ -49,11 +49,41 @@ export default async () => {
     }
   }
 
+const updateAddress = async (id, payload) => {
+  loading.value = true
+  error.value = null
+
+  try {
+    const token = localStorage.getItem("access")
+    if (!token) throw new Error("No access token found")
+
+    const { data: updatedData, error: updateError } = await useFetch(`${API_URL}addresses/${id}/`, {
+      method: "PATCH",
+      body: payload,
+    })
+
+    if (updateError.value) {
+      error.value = updateError.value
+      return { success: false, error: updateError.value }
+    }
+
+    return { success: true, data: updatedData.value }
+  } catch (err) {
+    error.value = err
+    return { success: false, error: err }
+  } finally {
+    loading.value = false
+  }
+}
+
+
+
   return {
     address,
     loading,
     error,
     fetchAddress,
+    updateAddress,
     saveAddress
   }
 }

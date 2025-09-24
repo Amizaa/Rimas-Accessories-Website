@@ -86,48 +86,48 @@ export default function useUser(userId) {
     }
   }
 
-  const fetchAuthenticatedUser = async () => {
-    loading.value = true
-    error.value = null
+const fetchAuthenticatedUser = async () => {
+  loading.value = true
+  error.value = null
 
-    try {
-      let token = localStorage.getItem("access")
-      if (!token) throw new Error("No access token found")
+  try {
+    const token = localStorage.getItem("access")
+    if (!token) throw new Error("No access token found")
 
-      const { data: userData, error: fetchError } = await useFetch(`${url}me/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      
-      if (fetchError.value) {
-        // If access token is expired, try refresh
-        if (fetchError.value.statusCode === 401) {
+    let userData = await $fetch(`${url}me/`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
 
-          const newToken = await refreshToken()
-          console.log(newToken);
-          if (!newToken) throw new Error("Session expired. Please login again.")
+    data.value = userData
+    return data.value
 
-          // Retry fetching user with new access token
-          const { data: retryData, error: retryError } = await useFetch(`${url}me/`, {
-            headers: { Authorization: `Bearer ${newToken}` },
-          })
-          if (retryError.value) throw retryError.value
+  } catch (err) {
+    // If token expired, try refresh
+    if (err?.response?.status === 401) {
+      const newToken = await refreshToken()
+      if (!newToken) throw new Error("Session expired. Please login again.")
 
-          data.value = retryData.value
-        } else {
-          throw fetchError.value
-        }
-      } else {
-        data.value = userData.value
+      try {
+        let retryData = await $fetch(`${url}me/`, {
+          headers: { Authorization: `Bearer ${newToken}` },
+        })
+        data.value = retryData
+        return data.value
+      } catch (retryErr) {
+        error.value = retryErr
+        data.value = null
+        return null
       }
-    } catch (err) {
+    } else {
       error.value = err
       data.value = null
-    } finally {
-      loading.value = false
+      return null
     }
-
-    return data.value
+  } finally {
+    loading.value = false
   }
+}
+
 
   // Refresh access token using refresh token
   const refreshToken = async () => {
