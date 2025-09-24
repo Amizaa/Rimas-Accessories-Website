@@ -3,7 +3,8 @@
     const route = useRoute()
     
     definePageMeta({
-        layout: 'account'
+        layout: 'account',
+        middleware: 'auth',
     })
     
     useHead({

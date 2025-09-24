@@ -2,7 +2,8 @@
     import { separatePrice } from 'price-seprator';
 
     definePageMeta({
-        layout: 'account'
+        layout: 'account',
+        middleware: 'auth',
     })
 
     useHead({

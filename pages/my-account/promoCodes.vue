@@ -2,7 +2,8 @@
     import { useClipboard } from '@vueuse/core'
 
     definePageMeta({
-        layout: 'account'
+        layout: 'account',
+        middleware: 'auth',
     })
 
     useHead({
