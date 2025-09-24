@@ -4,7 +4,8 @@ import { separatePrice } from 'price-seprator';
 
 
 definePageMeta({
-    layout:'admin'
+    layout:'admin',
+    middleware: 'auth-admin'
 })
 
 useHead({

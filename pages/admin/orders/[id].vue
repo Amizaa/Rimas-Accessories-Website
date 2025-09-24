@@ -7,7 +7,8 @@
     const order = orders.orders.find(order => order.orderId === route.params.id) || []
 
     definePageMeta({
-        layout: 'admin'
+        layout: 'admin',
+        middleware: 'auth-admin'
     })
 
     const pictures = [

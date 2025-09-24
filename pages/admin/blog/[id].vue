@@ -1,7 +1,8 @@
 <script setup>
 import posts from '~/api/posts.json'
 definePageMeta({
-    layout:'admin'
+    layout:'admin',
+    middleware: 'auth-admin'
 })
 const route = useRoute()
 const post = posts.find((post) => {return post.id == route.params.id})

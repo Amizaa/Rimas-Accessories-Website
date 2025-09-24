@@ -1,7 +1,8 @@
 <script setup>
 import products from '~/api/products.json'
 definePageMeta({
-    layout:'admin'
+    layout:'admin',
+    middleware: 'auth-admin'
 })
 
 useHead({

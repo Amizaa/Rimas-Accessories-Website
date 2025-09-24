@@ -3,7 +3,8 @@ import UserIcon from '@/assets/images/user.png'
 import UsersData from '~/api/users.json'
 
 definePageMeta({
-    layout:'admin'
+    layout:'admin',
+    middleware: 'auth-admin'
 })
 
 //https://ui.nuxt.com/components/command-palette#with-ignore-filter

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import orders from '~/api/orders2.json'
 definePageMeta({
-    layout:'admin'
+    layout:'admin',
+    middleware: 'auth-admin'
 })
 
 useHead({
