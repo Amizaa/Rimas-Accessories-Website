@@ -51,7 +51,7 @@ const intervalMs = 1000
 let intervalId = undefined
 
 const remainingSeconds = computed(() => {
-  return duration - Math.floor((progress.value / 100) * duration)
+  return duration - Math.floor((progress.value / 120) * duration)
 })
 
 const formatTime = (seconds) => {
@@ -61,13 +61,13 @@ const formatTime = (seconds) => {
 }
 
 const resetTimer = () => {
-  
+
   progress.value = 0
   clearInterval(intervalId)
   
   intervalId = setInterval(() => {
-    if (progress.value < 100) {
-      progress.value += 100 / duration
+    if (progress.value < 120) {
+      progress.value += 120 / duration
     } else {
       clearInterval(intervalId)
       intervalId = undefined
@@ -145,12 +145,12 @@ const login = async () => {
         <UPinInput :length="6"  v-model="pincode"/>
       </div>
         <div class="space-y-2 mt-2">
-          <UProgress v-model="progress" color="primary" />
+          <UProgress max="120"  v-model="progress" color="primary" />
           <div class="flex justify-between">
             <p @click="switchModal()" class="text-sm text-gray-600 cursor-pointer">
               تغییر شماره
             </p>
-            <p v-if="progress == 100" @click="sendOtp()" class="text-sm text-gray-600 cursor-pointer">
+            <p v-if="progress == 120 || remainingSeconds == 0" @click="sendOtp()" class="text-sm text-gray-600 cursor-pointer">
               ارسال مجدد کد تایید
             </p>
             <p v-else class="text-sm text-gray-600">
@@ -167,7 +167,7 @@ const login = async () => {
     
     <template #footer>
       <div class="space-x-3">
-        <UButton v-if="progress != 100" size="xl" class="cursor-pointer" label="ورود" color="primary" @click="login()"/>
+        <UButton v-if="progress != 120" size="xl" class="cursor-pointer" label="ورود" color="primary" @click="login()"/>
         <UButton size="xl" class="cursor-pointer" label="بستن" color="neutral" variant="outline" @click="second = false" />
       </div>
     </template>
