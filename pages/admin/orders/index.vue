@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import orders from '~/api/orders2.json'
 definePageMeta({
     layout:'admin',
     middleware: 'auth-admin'
@@ -9,20 +8,28 @@ useHead({
     title: 'سفارش ها'
 })
 
-const processingOrders = orders
-  .flatMap(user => user.orders.map(order => ({ ...order, userId: user.userId })))
-  .filter(order => order.status === "processing");
+const {fetchAll} = useAdmin()
+const orders = ref()
+orders.value = await fetchAll('orders')
+console.log(orders.value);
 
-const deliveredOrders = orders
-  .flatMap(user => user.orders.map(order => ({ ...order, userId: user.userId })))
-  .filter(order => order.status === "delivered");
+
+const pendingOrders = orders.value
+  .filter(order => order.status === "pending")
+  .map(order => ({ ...order, userId: order.address.user }));
+
+const shippedOrders = orders.value
+  .filter(order => order.status === "shipped" || order.status === "canceled")
+  .map(order => ({ ...order, userId: order.address.user }));
+
+
 
 </script>
 
 
 
 <template>
-  <AdminOrdersTable :data="processingOrders" title="سفارش های جدید"/>
+  <AdminOrdersTable :data="pendingOrders" title="سفارش های جدید"/>
 
-  <AdminOrdersTable :data="deliveredOrders" title="سفارش های ارسال شده"/>
+  <AdminOrdersTable :data="shippedOrders" title="سفارش های ارسال یا لغو شده"/>
 </template>

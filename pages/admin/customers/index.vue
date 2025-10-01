@@ -1,6 +1,5 @@
 <script setup>
 import UserIcon from '@/assets/images/user.png'
-import UsersData from '~/api/users.json'
 
 definePageMeta({
     layout:'admin',
@@ -8,14 +7,20 @@ definePageMeta({
 })
 
 //https://ui.nuxt.com/components/command-palette#with-ignore-filter
-const users = UsersData.map(user => ({
-  label: user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : ' ',
+
+const {fetchAll} = useAdmin()
+const userData = ref()
+userData.value = await fetchAll('users')
+
+const users = userData.value.map(user => ({
+  label: user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : ' ',
   suffix: user.phone,
   to: `/admin/customers/${user.id}`,
   avatar: {
     src: UserIcon
   }
 }))
+
 
 
 const searchTerm = ref('')

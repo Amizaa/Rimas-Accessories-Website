@@ -1,4 +1,6 @@
 <script setup>
+  import Logo from '@/public/images/Logo.png'
+
   const props = defineProps({
     item: Object,
   })
@@ -19,7 +21,7 @@
     <div style="direction:rtl" class="bg-white text-right rounded-2xl shadow-xl group overflow-hidden transition-transform duration-300 hover:translate-y-[-10px] cursor-pointer mb-4">
       <a :href="`/product/${item.title.replaceAll(' ','-')}/${item.id}`" >
         <div class="h-48 w-full overflow-hidden relative">
-          <img class="h-full w-full object-cover transform overflow-hidden transition-transform duration-[300ms] group-hover:scale-125 object-end" :src="item.images[0].url" :alt="item.title" />
+          <img class="h-full w-full object-cover transform overflow-hidden transition-transform duration-[300ms] group-hover:scale-125 object-end" :src="item.images[0]?.url ?? Logo " :alt="item.title" />
           <div v-if="item.discount" class="absolute p-2 bg-indigo-800 top-0 text-sm rounded-bl-2xl text-white text-center">تخفیف</div>
         </div>
         

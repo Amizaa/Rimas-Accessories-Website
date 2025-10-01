@@ -2,15 +2,23 @@
 import { ShoppingCartIcon, TruckIcon, UserIcon } from '@heroicons/vue/20/solid';
 import { separatePrice } from 'price-seprator';
 
-
 definePageMeta({
-    layout:'admin',
-    middleware: 'auth-admin'
+  layout:'admin',
+  middleware: 'auth-admin'
 })
 
 useHead({
     title: 'داشبورد'
 })
+
+const {fetchAll} = useAdmin()
+const orders = ref()
+const users = ref()
+users.value = await fetchAll('users')
+orders.value = await fetchAll('orders')
+
+const { dailyData, weeklyData, monthlyData, yearlyData } = groupSales(orders.value) 
+
 
 const items = ref([
     {
@@ -28,48 +36,12 @@ const items = ref([
     {
     label: 'روزانه',
     value: 'Day'
-    }
+  }
 ])
 
 const period = ref('Year')
 
 
-const yearlyData = [
-  { year: '2020', sales: 400, profit: 200 },
-  { year: '2021', sales: 600, profit: 300 },
-  { year: '2022', sales: 750, profit: 350 },
-  { year: '2023', sales: 900, profit: 420 },
-  { year: '2024', sales: 1100, profit: 500 },
-  { year: '2025', sales: 950, profit: 470 }
-]
-
-const monthlyData = [
-  { month: 'فروردین', sales: 100, profit: 50 },
-  { month: 'اردیبهشت', sales: 120, profit: 55 },
-  { month: 'خرداد', sales: 180, profit: 80 },
-  { month: 'تیر', sales: 110, profit: 40 },
-  { month: 'مرداد', sales: 90, profit: 30 },
-  { month: 'شهریور', sales: 130, profit: 60 }
-]
-
-const weeklyData = [
-  { week: 'هفته اول', sales: 40, profit: 20 },
-  { week: 'هفته دوم', sales: 60, profit: 30 },
-  { week: 'هفته سوم', sales: 50, profit: 25 },
-  { week: 'هفته چهارم', sales: 70, profit: 35 }
-]
-
-const dailyData = [
-  { day: '01 تیر', sales: 10, profit: 5 },
-  { day: '02 تیر', sales: 15, profit: 7 },
-  { day: '03 تیر', sales: 8, profit: 4 },
-  { day: '04 تیر', sales: 12, profit: 6 },
-  { day: '05 تیر', sales: 20, profit: 10 },
-  { day: '06 تیر', sales: 18, profit: 9 },
-  { day: '07 تیر', sales: 22, profit: 11 }
-]
-
-// Chart categories
 const categories: Record<string, BulletLegendItemInterface> = {
   sales: { name: 'فروش', color: '#6366f1' }
 }
@@ -92,31 +64,56 @@ const chartData = computed(() => {
 
 const xFormatter = (i: number): string | number => chartData.value[i]?.x ?? ''
 
-const DonutData = [
-  {
-    color: '#3b82f6',
-    name: 'گوشواره',
-    value: 40,
-  },
-  {
-    color: '#a855f7',
-    name: 'دستبند',
-    value: 20,
-  },
-  {
-    color: '#22c55e',
-    name: 'پابند',
-    value: 10,
-  },
-  {
-    color: '#ff0000',
-    name: 'گردنبند',
-    value: 30,
-  },
-]
+const DonutData = groupSalesByCategory(orders.value)
+
+const newOrders = orders.value.filter(order => order.status === 'pending')
+const shippedOrders = orders.value.filter(order => order.status === 'shipped')
+
+const newUsers = users.value.filter(user => {
+  const userDate = new Date(user.signup_date)
+  const now = new Date()
+  const diffTime = Math.abs(now.getTime() - userDate.getTime())
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  return diffDays <= 7
+})
+
 </script>
 
 <template>
+  
+  <div class="grid grid-cols-3 gap-3">
+    <div class="flex justify-between col-span-3 md:col-span-1 shadow-md rounded-2xl p-3">
+      <div class="w-2/3">
+        <h1 class="text-2xl mb-8">کاربران جدید</h1>
+        <span class="text-5xl text-indigo-500 font-bold w-full">{{newUsers.length}}</span>
+      </div>
+      <div class="w-1/3 max-w-30 flex items-center">
+        <UserIcon class="fill-indigo-500" />
+      </div>
+    </div>
+    
+    <div class="flex justify-between col-span-3 md:col-span-1 shadow-md rounded-2xl p-3">
+      <div class="w-2/3">
+        <h1 class="text-2xl mb-8">سفارش های جدید</h1>
+        <span class="text-5xl text-green-500 font-bold w-full">{{newOrders.length}}</span>
+      </div>
+      <div class="w-1/3 max-w-25 flex items-center">
+        <ShoppingCartIcon class="fill-green-500" />
+      </div>
+    </div>
+    
+    <div class="flex justify-between col-span-3 md:col-span-1 shadow-md rounded-2xl p-3">
+      <div class="w-2/3">
+        <h1 class="text-2xl mb-8">سفارش های ارسال شده</h1>
+        <span class="text-5xl text-amber-500 font-bold w-full">{{shippedOrders.length}}</span>
+      </div>
+      <div class="w-1/3 max-w-25 flex items-center">
+        <TruckIcon class="fill-amber-500" />
+      </div>
+    </div>
+  </div>
+  
+  
   <div>
     <span>بازه زمانی: </span>
     <USelect
@@ -127,39 +124,6 @@ const DonutData = [
       class="w-48 my-4"
     />
   </div>
-
-  <div class="grid grid-cols-3 gap-3">
-    <div class="flex justify-between col-span-3 md:col-span-1 shadow-md rounded-2xl p-3">
-      <div class="w-2/3">
-        <h1 class="text-2xl mb-8">کاربران جدید</h1>
-        <span class="text-5xl text-indigo-500 font-bold w-full">25</span>
-      </div>
-      <div class="w-1/3 max-w-30 flex items-center">
-        <UserIcon class="fill-indigo-500" />
-      </div>
-    </div>
-
-    <div class="flex justify-between col-span-3 md:col-span-1 shadow-md rounded-2xl p-3">
-      <div class="w-2/3">
-        <h1 class="text-2xl mb-8">سفارش های جدید</h1>
-        <span class="text-5xl text-green-500 font-bold w-full">41</span>
-      </div>
-      <div class="w-1/3 max-w-25 flex items-center">
-        <ShoppingCartIcon class="fill-green-500" />
-      </div>
-    </div>
-
-    <div class="flex justify-between col-span-3 md:col-span-1 shadow-md rounded-2xl p-3">
-      <div class="w-2/3">
-        <h1 class="text-2xl mb-8">سفارش های ارسال شده</h1>
-        <span class="text-5xl text-amber-500 font-bold w-full">112</span>
-      </div>
-      <div class="w-1/3 max-w-25 flex items-center">
-        <TruckIcon class="fill-amber-500" />
-      </div>
-    </div>
-  </div>
-
   <div class="my-10">
     <h1 class="text-center font-azarmehrbold text-4xl mb-4">روند فروش</h1>
     <LineChart class="chartt"

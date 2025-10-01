@@ -1,14 +1,22 @@
 // middleware/admin-auth.ts
 export default defineNuxtRouteMiddleware(async (to, from) => {
-  const access = process.client ? localStorage.getItem("access") : null
+  if (process.server) return
+
+  const access = localStorage.getItem("access")
 
   if (!access) {
     return navigateTo("/")
   }
 
+  type User = {
+  is_staff: boolean
+  is_superuser: boolean
+}
+
+
   try {
     // Fetch authenticated user info
-    const user = await $fetch("http://localhost:8000/api/me/", {
+    const user = await $fetch<User>("http://localhost:8000/api/me/", {
       headers: {
         Authorization: `Bearer ${access}`,
       },
@@ -20,6 +28,5 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
   } catch (err) {
     console.error("Admin auth check failed:", err)
-    return navigateTo("/")
   }
 })

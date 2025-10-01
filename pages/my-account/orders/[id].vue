@@ -21,17 +21,6 @@
     loading.value = false
     })
 
-    const formatPersianDate = (date) => {
-        const newDate = new Date(date)
-        return new Intl.DateTimeFormat('fa-IR', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        }).format(newDate)
-    }
-
 </script>
 
 <template>

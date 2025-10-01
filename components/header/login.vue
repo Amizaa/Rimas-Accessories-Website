@@ -102,7 +102,8 @@ const login = async () => {
 
 <template>
   <h4 v-if="loading" class="text-sm/6 font-semibold text-gray-900 hover:text-gray-600 cursor-pointer size-7"></h4>
-  <userIcon v-else-if="!loading && user" @click="navigateTo('/my-account/profile')" class="text-sm/6 font-semibold text-gray-900 hover:text-gray-600 cursor-pointer size-7"/>
+  <userIcon v-else-if="!loading && user && !user.is_staff" @click="navigateTo('/my-account/profile')" class="text-sm/6 font-semibold text-gray-900 hover:text-gray-600 cursor-pointer size-7"/>
+  <userIcon v-else-if="!loading && user && user.is_staff" @click="navigateTo('/admin/dashboard')" class="text-sm/6 font-semibold text-gray-900 hover:text-gray-600 cursor-pointer size-7"/>
   <UModal v-else closeIcon=" " v-model:open="first" :ui="{ footer: 'justify-center',content: 'divide-none font-azarmehr',header: 'justify-center' }">
     <UButton variant="link" class="text-sm/6 font-semibold text-gray-900 hover:text-gray-600 cursor-pointer" label="ورود / ثبت نام" color="neutral"  />
 

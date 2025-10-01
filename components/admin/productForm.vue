@@ -1,29 +1,30 @@
 <script setup>
 const props = defineProps({
   product: Object,
-  edit: Boolean
+  edit: Boolean,
+  categories: Array,
 })
-
-import { priceToEnglishWords, priceToPersianWords, separatePrice } from 'price-seprator';
 
 const schema = ref(null);
 
+const variants = ref([])
+variants.value.push({ id: Date.now(), data: { title: '', price: '', stock: '' } })
+const images = ref([])
+const previewImages = ref([])
+
 const state = reactive({
   title: undefined,
-  price: undefined,
   features: undefined,
   discount: undefined,
-  quantity: undefined,
-  category: undefined
+  category: undefined,
 })
 
 if (props.product) {
-  state.title = props.product.title
-  state.price = props.product.price
+  state.title = props.product.product_title
   state.features = props.product.features
   state.discount = props.product.discount
-  state.quantity = props.product.quantity
   state.category = props.product.category
+  previewImages.value = props.product.images.map(img => img) || []
 }
 
 onMounted(async () => {
@@ -31,11 +32,7 @@ onMounted(async () => {
   schema.value = Joi.object({
     title: Joi.string().required().messages({
         'title.base': 'عنوان باید رشته باشد',
-        'any.required': 'عنوان را وارد کنید'
-      }),
-    price: Joi.number().required().messages({
-        'number.base': 'قیمت باید عدد باشد',
-        'any.required': 'قیمت را وارد کنید'
+        'any.required': 'عنوان محصول را وارد کنید'
       }),
     features: Joi.array()
       .items(
@@ -58,16 +55,6 @@ onMounted(async () => {
         'number.max': 'درصد تخفیف نمی‌تواند بیشتر از ۱۰۰ باشد',
         'any.required': 'وارد کردن درصد تخفیف الزامی است'
       }),
-
-    quantity: Joi.number()
-      .min(0)
-      .required()
-      .messages({
-        'number.base': 'تعداد موجودی باید عدد باشد',
-        'number.min': 'تعداد موجودی نمی‌تواند کمتر از ۰ باشد',
-        'any.required': 'وارد کردن تعداد موجودی الزامی است'
-      }),
-
     category: Joi.string()
       .required()
       .messages({
@@ -79,17 +66,70 @@ onMounted(async () => {
 })
 
 const toast = useToast()
+const {createItem, updateItem, uploadImages, deleteItem} = useAdmin()
+
 async function onSubmit(event) {
-  toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
+  const payload = {
+    title: state.title,
+    features: state.features,
+    discount: state.discount,
+    category_id: props.categories.find(cat => cat.value === state.category)?.id,
+    price: 0,
+  }
+
+  if (!props.edit) {
+    payload.variants = variants.value.map(variant => ({
+      title: variant.data.title,
+      price: parseInt(variant.data.price),
+      stock: parseInt(variant.data.stock)
+    }))
+  }
+
+  
+  let response = ''
+  if (props.edit) {
+    response = await updateItem('products', props.product.product_id, payload)
+    if (response.success && images.value.length > 0) {
+      response = await uploadImages("products", response.data.id, images.value)
+    }
+  } else {
+    response =  await createItem('products', payload)
+    if (response.success && images.value.length > 0) {
+      response = await uploadImages("products", response.data.id, images.value)
+    }
+  }
+
+  
+  if (response.success) {
+    toast.add({ title: 'افزودن / ویرایش محصول', description: 'افزودن / ویرایش محصول با موفقیت انجام شد.', color: 'success',onClose: () => window.location.reload() })
+  }else{
+    toast.add({ title: 'خطا', description: 'افزودن / ویرایش محصول با خطا مواجه شد.', color: 'error' })
+  }
+
 }
 
-const categories = ref([
-  { label: 'گوشواره', value:'گوشواره' },
-  { label: 'گردنبند',value: 'گردنبند'},
-  { label: 'دستبند',value: 'دستبند' },
-  { label: 'پابند',value: 'پابند' },
-  { label: 'ست',value: 'ست'},
-]);
+function addVariant() {
+  variants.value.push({ id: Date.now(), data: { title: '', price: '', stock: '' } })
+}
+
+function removeVariant(index) {
+  if (variants.value.length > 1) {
+    variants.value.splice(index, 1)
+  }else{
+    toast.add({ title: 'خطا', description: 'حداقل باید یک نوع (مدل) برای محصول وجود داشته باشد.', color: 'error' })
+  }
+}
+
+async function deleteImage(id,idx) {
+  const response = await deleteItem('product-images', id)
+  if (response.success) {
+    toast.add({ title: 'حذف تصویر', description: 'حذف تصویر با موفقیت انجام شد.', color: 'success' })
+    previewImages.value.splice(idx, 1)  
+  }else{
+    toast.add({ title: 'خطای حذف تصویر', description: 'حذف تصویر با خطامواجه شد .', color: 'error' })
+  }
+}
+
 </script>
 
 <template>
@@ -97,27 +137,78 @@ const categories = ref([
     <UFormField size="xl" class="col-span-2 md:col-span-1" label="عنوان" name="title">
       <UInput v-model="state.title" class="w-full" placeholder="عنوان محصول"/>
     </UFormField>
-    <UFormField size="xl" class=" col-span-2 md:col-span-1" label="قیمت" name="price">
-      <UInput v-model="state.price" class="w-full" placeholder="قیمت به تومان"/>
-      <span class=" text-sm text-gray-400">{{priceToPersianWords(state.price)}}</span>
-    </UFormField>
     <UFormField size="xl" class=" col-span-2 md:col-span-1" label="ویژگی ها" name="features">
       <UInputTags style="direction:rtl" v-model="state.features" class="w-full" placeholder="بعد از وارد کردن هر ویژگی Enter را بزنید"/>
     </UFormField>
     <UFormField size="xl" class=" col-span-2 md:col-span-1" label="درصد تخفیف" name="discount">
       <UInput v-model="state.discount" class="w-full" placeholder="از 0 تا 100"/>
     </UFormField>
-    <UFormField size="xl" class=" col-span-2 md:col-span-1" label="تعداد" name="quantity">
-      <UInput v-model="state.quantity" class="w-full" placeholder="حداقل 0 عدد"/>
-    </UFormField>
     <UFormField size="xl" class=" col-span-2 md:col-span-1" label="دسته بندی" name="category">
       <USelect style="direction:rtl" v-model="state.category" :items="categories" class="w-full" />
     </UFormField>
+
+    <USeparator class=" col-span-2" />
+    <div class="col-span-2" v-if="!edit">
+      <h1 class="text-xl font-azarmehrbold text-green-500 text-center my-5">انواع (مدل های) محصول</h1>
+      <div v-for="(variant, idx) in variants" :key="variant.id" class="border border-gray-300 rounded-lg p-3 mb-3 relative">
+      <span>نوع {{ idx + 1 }}</span>
+      <button
+        type="button"
+        class="absolute top-2 left-2 text-red-500 hover:text-red-700 cursor-pointer border border-red-500 hover:border-red-700 rounded-full px-2"
+        @click="removeVariant(idx)"
+      >
+        X
+      </button>
+      <AdminVariantForm v-model="variants[idx].data" :product="null" :edit="false" :add="false" />
+      </div>
+      <UButton
+      type="button"
+      class="mt-2 cursor-pointer text-center flex justify-center border-dashed border-2 col-span-2"
+      color="green"
+      @click="addVariant"
+      >
+      + افزودن نوع جدید
+      </UButton>
+    </div>
+
+    <USeparator class=" col-span-2" />
+    <div class="col-span-2">
+      <h1 class="text-xl font-azarmehrbold text-green-500 text-center my-5">تصاویر محصول</h1>
+      <div class="flex justify-center">
+        <UFileUpload
+          v-model="images"
+          layout="grid"
+          position="outside"
+          multiple
+          label="آپلود تصاویر محصول"
+          description="SVG, PNG, JPG or GIF"
+          class="w-96"
+          :ui="{
+            base: 'min-h-48 border-2 border-dashed border-gray-300 bg-white hover:bg-gray-50 cuersor-pointer',
+            content: 'flex flex-col items-center justify-center p-5',
+          }"
+        />
+      </div>
+
+      <div v-if="edit" class="grid grid-cols-3 gap-3 mt-4">
+        <div v-for="(img, idx) in previewImages" :key="idx" class="relative">
+            <img :src="img.url" alt="تصویر محصول" class="object-cover rounded" />
+            <button
+            type="button"
+            class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+            @click="deleteImage(img.id,idx)"
+            title="حذف تصویر"
+              >×</button>
+          </div>
+      </div>
+    </div>
 
 
     <UButton size="xl" :class="['cursor-pointer text-center flex justify-center col-span-2', edit ? ' bg-blue-400 hover:bg-blue-500' : 'bg-indigo-400 hover:bg-indigo-500' ]" type="submit">
       {{ edit ? 'ویرایش محصول' : 'افزودن محصول جدید' }}
     </UButton>
   </UForm>
+
+
 </template>
 

@@ -12,10 +12,11 @@ const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 
+
 const columns = [
   {
-    accessorKey: 'orderId',
-    cell: ({ row }) => `#${row.getValue('orderId')}`,
+    accessorKey: 'id',
+    cell: ({ row }) => `#${row.getValue('id')}`,
     header: ({ column }) => {
     const isSorted = column.getIsSorted()
 
@@ -35,14 +36,22 @@ const columns = [
   },
   {
     accessorKey: 'userId',
-    cell: ({ row }) => `${row.getValue('userId')}`,
+    cell: ({ row }) => {
+      const user = row.original.user
+      const firstName = user.first_name
+      const lastName = user.last_name
+      if (firstName || lastName) {
+      return `${firstName ?? ''} ${lastName ?? ''}`.trim()
+      }
+      return user.phone
+    },
     header: ({ column }) => {
       const isSorted = column.getIsSorted()
 
       return h(UButton, {
         color: 'neutral',
         variant: 'ghost',
-        label: 'سفارش دهنده',
+        label: ' سفارش دهنده',
         icon: isSorted
           ? isSorted === 'asc'
             ? 'i-lucide-arrow-up-narrow-wide'
@@ -54,16 +63,8 @@ const columns = [
     }  
   },
   {
-    accessorKey: 'orderDate',
-    cell: ({ row }) => {
-      return new Date(row.getValue('orderDate')).toLocaleString('en-US', {
-        day: 'numeric',
-        month: 'short',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      })
-    },
+    accessorKey: 'order_date',
+    cell: ({ row }) => { return formatPersianDate(row.getValue('order_date'))},
     header: ({ column }) => {
       const isSorted = column.getIsSorted()
 
@@ -86,19 +87,24 @@ const columns = [
     header: 'وضعیت',
     cell: ({ row }) => {
       const color = {
-        processing: 'secondary',
-        delivered: 'success',
+        pending: 'secondary',
+        shipped: 'success',
+        canceled: 'error'
       }[row.getValue('status')]
 
       return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () =>
-        row.getValue('status') == 'processing'? 'در حال بررسی' : 'ارسال شده'
+        row.getValue('status') === 'pending'
+          ? 'در حال بررسی'
+          : row.getValue('status') === 'canceled'
+            ? 'لغو شده'
+            : 'ارسال شده'
       )
     }
   },
   {
-    accessorKey: 'totalAmount',
+    accessorKey: 'total_amount',
     cell: ({ row }) => {
-      const amount = Number.parseFloat(row.getValue('payment'))
+      const amount = Number.parseFloat(row.getValue('total_amount'))
       
       const formatted = `${separatePrice(amount)} تومان`
       
@@ -161,7 +167,7 @@ function getRowItems(row) {
     {
       label: 'مشاهده جزئیات بیشتر',
       onSelect() {
-        navigateTo(`orders/${row.original.orderId}`)
+        navigateTo(`orders/${row.original.id}`)
       }
     }
   ]

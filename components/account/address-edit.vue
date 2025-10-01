@@ -104,8 +104,7 @@ const updateAddressHandler = async(addressId) =>{
     const result = await updateAddress(parseInt(addressId), payload);
     if (result.success) {
       open.value = false;
-      toast.add({ title: 'بروزرسانی آدرس', description: 'آدرس با موفقیت بروزرسانی شد', color: 'success' })
-        window.location.reload()
+      toast.add({ title: 'بروزرسانی آدرس', description: 'آدرس با موفقیت بروزرسانی شد', color: 'success', onClose: () => window.location.reload() })
     } else {
       toast.add({ title: 'خطا', description: 'دوباره تلاش کنید', color: 'error' })
     }
