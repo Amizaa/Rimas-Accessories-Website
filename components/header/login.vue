@@ -37,8 +37,13 @@ onMounted(async () => {
     
     
   });
-  user.value = await fetchAuthenticatedUser()
-  loading.value = false;
+  const response = await fetchAuthenticatedUser()
+  if (response?.error) {
+    loading.value = false;
+  }else{
+    user.value = response
+    loading.value = false;
+  }
 });
 
 

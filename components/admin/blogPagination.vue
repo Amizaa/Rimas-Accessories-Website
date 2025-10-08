@@ -1,14 +1,17 @@
 <script setup>
-    import posts from '~/api/posts.json'
 
     const itemsPerPage = 6
     const page = ref(1)
+
+    const {fetchAll} = useAdmin()
+    const posts = ref([])
+    posts.value = await fetchAll('blog-posts')
 
     // Slice products based on current page
     const paginatedPosts = computed(() => {
         const start = (page.value - 1) * itemsPerPage
         const end = start + itemsPerPage
-        return posts.slice(start, end)
+        return posts.value.slice(start, end)
     })
 
 </script>

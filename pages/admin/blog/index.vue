@@ -7,6 +7,7 @@ definePageMeta({
 useHead({
     title: 'بلاگ ها'
 })
+
 </script>
 
 <template>

@@ -15,8 +15,6 @@ const state = reactive({
     receiverName: undefined,
 });
 
-
-
 const schema = ref(null); // Use ref so it's reactive
 
 onMounted(async () => {

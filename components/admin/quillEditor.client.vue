@@ -1,14 +1,20 @@
 <template>
   <div>
     <div ref="editor" class=" font-azarmehr" />
-    <button class=" bg-amber-300" @click="saveContent">save</button>
+    <p class="text-red-400 mt-3">{{ error }}</p>
   </div>
 </template>
 
 <script setup>
 const props = defineProps({
-  content: Object
+  post: Object,
+  modelValue: Object,
+  error: String
 })
+
+const images = ref([])
+
+const emit = defineEmits(['update:modelValue'])
 
 import { ref, onMounted, nextTick } from 'vue'
 import Quill from 'quill'
@@ -16,6 +22,7 @@ import QuillResizeImage from 'quill-resize-image';
 import 'quill/dist/quill.snow.css'
 
 Quill.register("modules/resize", QuillResizeImage);
+let quill = null
 
 const toolbarOptions = {
     container: [
@@ -35,6 +42,38 @@ const toolbarOptions = {
         ['clean']   ,
     ],
    handlers: {
+      image: function () {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.click();
+
+        input.onchange = async () => {
+          const file = input.files?.[0];
+          if (!file) return;
+
+          // editor را از this.quill (در handler های Quill) یا quill.value بگیر
+          const editor = (typeof this !== 'undefined' && this.quill) ? this.quill : (quill && quill ? quill : null);
+
+          if (!editor) {
+            console.warn('Quill editor not initialized yet — saving file for later.');
+            // اگر می‌خوایید فایل را نگه دارید تا بعدا وارد کنید:
+            images.value.push({ file, placeholder: `__image_${Date.now()}__` });
+            return;
+          }
+
+          // امن گرفتن selection — ممکنه null باشه (ادیتور فوکوس نداشته باشه)
+          const range = editor.getSelection ? editor.getSelection() : null;
+          const insertIndex = (range && typeof range.index === 'number') ? range.index : editor.getLength();
+
+          const placeholder = `__image_${Date.now()}__`;
+          editor.insertEmbed(insertIndex, 'image', placeholder);
+          images.value.push({ file, placeholder });
+      
+        };
+      },
+
+
     undo: function () {
       this.quill.history.undo()
     },
@@ -45,7 +84,6 @@ const toolbarOptions = {
 }
 
 const editor = ref(null)
-const quill = ref(null)
 onMounted(async () => {
   await nextTick()
 
@@ -55,7 +93,7 @@ onMounted(async () => {
     return
   }
   
-  quill.value = new Quill(editor.value, {
+  quill = new Quill(editor.value, {
     theme: 'snow',
     modules:{
       toolbar: toolbarOptions,
@@ -75,32 +113,44 @@ onMounted(async () => {
     }
     
   })
+
+  if (props.post) {
+    console.log(props.post.delta);
+    if (props.post.delta) {
+      try {
+        quill.setContents(props.post.delta)   // restore Quill delta
+      } catch (err) {
+        console.error("Invalid delta:", err)
+        quill.root.innerHTML = props.post.content_html || "" // fallback to HTML
+      }
+    } else if (props.post.content_html) {
+      quill.root.innerHTML = props.post.content_html
+    }
+  }
   
-  quill.value.on('text-change', () => {
-    const html = quill.value.root.innerHTML
+  quill.on('text-change', () => {
+    const html = quill.root.innerHTML
+  })
+
+  quill.on('text-change', () => {
+    emit('update:modelValue', {
+      html: quill.root.innerHTML,
+      delta: quill.getContents(),
+      images: images.value
+    })
   })
   
 
-  quill.value.root.addEventListener('keydown', (e) => {
+  quill.root.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.key === 'z' && !e.shiftKey) {
       e.preventDefault()
-      quill.value.history.undo()
+      quill.history.undo()
     } else if (e.ctrlKey && e.key === 'Z' || (e.ctrlKey && e.shiftKey && e.key === 'z')) {
       e.preventDefault()
-      quill.value.history.redo()
+      quill.history.redo()
     }
   })
 })
-
-const saveContent = async () => {
-  const html = quill.value.root.innerHTML
-  const delta = quill.value.getContents()
-
-  await $fetch('/api/save-quill-content', {
-    method: 'POST',
-    body: { content: html, delta: delta }
-  })
-}
 
 
 </script>

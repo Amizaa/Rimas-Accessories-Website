@@ -105,7 +105,7 @@ const fetchAuthenticatedUser = async () => {
     // If token expired, try refresh
     if (err?.response?.status === 401) {
       const newToken = await refreshToken()
-      if (!newToken) throw new Error("Session expired. Please login again.")
+      if (!newToken) return {error: true}
 
       try {
         let retryData = await $fetch(`${url}me/`, {

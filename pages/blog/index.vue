@@ -1,15 +1,17 @@
 <script setup>
-    const {posts} = usePosts()
+    const {fetchPosts} = usePosts()
+    const posts = ref('')
+    posts.value = await fetchPosts()
 
     useHead({
         title: 'وبلاگ'
     })
 
-    const topViewedPosts = posts
+    const topViewedPosts = posts.value
     .sort((a, b) => b.views - a.views)
     .slice(0, 3);
 
-    const newestPosts = posts
+    const newestPosts = posts.value
     .sort((a, b) => new Date(b.published_at) - new Date(a.published_at))
     .slice(0, 3);
 </script>

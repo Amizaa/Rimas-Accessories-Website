@@ -10,3 +10,14 @@ return new Intl.DateTimeFormat('fa-IR', {
 }).format(newDate)
 
 }
+
+export function formatPersianDateBlog(date: string | number | Date) {
+    
+const newDate = new Date(date)
+return new Intl.DateTimeFormat('fa-IR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+}).format(newDate)
+
+}

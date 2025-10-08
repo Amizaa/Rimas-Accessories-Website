@@ -2,20 +2,23 @@
     const route = useRoute()
     const slug = route.params.slug
 
-    const {posts} = usePosts()
+    const {fetchPostBySlug, fetchPosts} = usePosts()
+    const posts = ref('')
+    posts.value = await fetchPosts()
     
-    const topViewedPosts = posts
+    const topViewedPosts = posts.value
     .sort((a, b) => b.views - a.views)
     .slice(0, 3);
     
-    const newestPosts = posts
+    const newestPosts = posts.value
     .sort((a, b) => new Date(b.published_at) - new Date(a.published_at))
     .slice(0, 3);
     
-    const post = posts.find(p => p.slug === slug);
+    const post = ref('')
+    post.value = await fetchPostBySlug(slug)
     
     useHead({
-        title: post.title
+        title: post.value.title
     })
 
 </script>
@@ -25,9 +28,9 @@
         <BlogSidebar :topPosts="topViewedPosts" :newPosts="newestPosts" />
 
         <main class="md:w-2/3 lg:w-3/4 w-full py-1 min-h-screen">
-            <BlogContentHeader :title="post.title" :date="post.published_at" :author="post.author" :image="post.thumbnail"/>
+            <BlogContentHeader :excerpt="post.excerpt" :title="post.title" :date="post.published_at" :author="post.author" :image="post.thumbnail"/>
 
-            <BlogContentBody :body="post.excerpt" />
+            <BlogContentBody :body="post.content_html" />
 
             <BlogContentFooter :tags="post.tags" />
         </main>

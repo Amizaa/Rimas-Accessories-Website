@@ -187,7 +187,6 @@ const deleteItem = async (resource, id) => {
     }
   }
 
-
   return {
     loading,
     error,
