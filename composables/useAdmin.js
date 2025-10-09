@@ -135,7 +135,7 @@ const deleteItem = async (resource, id) => {
     }
   }
 
-    async function fetchOrderById(orderId) {
+  async function fetchOrderById(orderId) {
     loading.value = true
     error.value = null
     const order = ref(null)
@@ -187,6 +187,35 @@ const deleteItem = async (resource, id) => {
     }
   }
 
+  async function fetchUserPromos(userId) {
+    loading.value = true
+    error.value = null
+    const promos = ref(null)
+
+    try {
+      const token = localStorage.getItem("access")
+      if (!token) throw new Error("No access token found")
+
+      const response = await $fetch(`${API_URL}promo-users/?user_id=${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      promos.value = response
+    } catch (err) {
+      error.value = err?.data?.error || 'خطا در دریافت کد های تخفیف'
+      promos.value = null
+    } finally {
+      loading.value = false
+    }
+    return promos.value
+
+  }
+
+
+
+
   return {
     loading,
     error,
@@ -198,5 +227,6 @@ const deleteItem = async (resource, id) => {
     fetchOrderById,
     uploadImages,
     deleteItem,
+    fetchUserPromos
   }
 }
