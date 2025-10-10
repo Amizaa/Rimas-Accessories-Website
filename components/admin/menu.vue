@@ -26,8 +26,9 @@ const items = [
     {name: 'مشتری ها', href:'/admin/customers'},
     {name: 'سفارش ها', href: '/admin/orders',badge: 6},
     {name: 'محصولات', href: '/admin/products'},
+    {name: 'دسته بندی ها', href: '/admin/categories'},
     {name: 'بلاگ', href: '/admin/blog'},
-    {name: 'کد های تخفیف', href: '/admin/promoCodes'}
+    {name: 'کد های تخفیف', href: '/admin/promoCodes'},
 ]
 
 
