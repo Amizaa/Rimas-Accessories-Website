@@ -45,7 +45,7 @@ function handleOrderSubmit() {
                   <span v-if="promo.freeShipping" class=" text-sm text-green-500">(ارسال رایگان)</span>
                   <span v-else class=" text-sm text-gray-500">({{shipping.name=='post' ? 'پست' : 'تیپاکس'}})</span>
                 </span>
-                <span class="font-medium">{{promo.freeShipping ? 0 : separatePrice(shipping.price)}} تومان</span>
+                <span class="font-medium">{{promo.freeShipping ? `0 تومان` : shipping.price > 0 ? `${separatePrice(shipping.price)} تومان` : 'پس کرایه'}}</span>
               </div>
               <div v-if="discount != 0"  class="flex justify-between text-green-600">
                 <span>{{ promo.title }}</span>

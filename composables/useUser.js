@@ -21,22 +21,26 @@ export default function useUser(userId) {
     return data.value
   }
 
-  const updateUser = async (payload, id = userId) => {
-    loading.value = true
-    error.value = null
-    const { data: updatedData, error: updateError } = await useFetch(`${url}users/${id}/`, {
+const updateUser = async (payload, id = userId) => {
+  loading.value = true
+  error.value = null
+
+  try {
+    const updatedData = await $fetch(`${url}users/${id}/`, {
       method: 'PATCH',
-      body: payload
+      body: payload,
     })
-    if (updateError.value) {
-      error.value = updateError.value
-      loading.value = false
-      return null
-    }
-    data.value = updatedData.value
-    loading.value = false
+
+    data.value = updatedData
     return data.value
+  } catch (err) {
+    error.value = err
+    return null
+  } finally {
+    loading.value = false
   }
+}
+
 
   const requestOtp = async (phone) => {
     loading.value = true

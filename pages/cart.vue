@@ -1,59 +1,40 @@
 <script setup>
 import { TrashIcon } from '@heroicons/vue/24/outline';
-import { priceToPersianWords, separatePrice } from 'price-seprator';
+import shipping from '~/api/shipping.json'
+import { priceToPersianWords,separatePrice } from 'price-seprator';
 import ShoppingCart from '~/assets/images/shopping_cart.svg'
+import { useCartStore } from '~/store/cart'
 
 useHead({
   title: 'سبد خرید'
 })
 
-const shippingOptions = ref([
-  {
-    label: 'شرکت پست',
-    value: 'post',
-    description: 'تحویل در 5 الی 7 روز کاری',
-    ui:{wrapper:'cursor-pointer'},
-    price: 45000
-  },
-  {
-    label: 'تیپاکس',
-    value: 'tipax',
-    description: 'تحویل در 3 الی 5 روز کاری',
-    ui:{wrapper:'cursor-pointer'},
-    price: 65000
-  },
-])
+const shippingOptions = ref()
+shippingOptions.value = shipping.map((opt) => ({
+  label: opt.title,
+  value: opt.label,
+  description: opt.description,
+  price: opt.cost,
+  ui:{wrapper:'cursor-pointer'}
+}))
 
+const { addItem, setShipping, removeItem, updateItem} = useCartStore()
 
-const { cart, updateCartItem, removeFromCart, updateShipping } = useCart()
-const cartStore = useCart()
+const cartStore = useCartStore()
 
-onMounted(() => {
-  const cartCookie = useCookie('cart')
-  const shippingCookie = useCookie('shipping')
-  
-  if (cartCookie.value) {
-    try {
-      cartStore.cart = cartCookie.value
-      cartStore.shipping = shippingCookie.value
-    } catch (e) {
-      cartStore.cart = []
-      cartStore.shipping = {name:''}
-    }
-  }
-  
+const products =  ref([])
+onMounted(async () => {
+  cartStore.loadFromLocal()  // فقط در client
+  const productIds = [...new Set(cartStore.items.map(item => item.productId))].join(',')
+  products.value = await useFetchProducts({ ids: productIds })
 })
 
+const shippingOption = computed(() => cartStore.shipping_method?.name || '')
 
-const shippingOption = computed(() => cartStore.shipping?.name || '')
-
-const productIds = [...new Set(cartStore.cart.map(item => item.productId))].join(',')
-
-const products = await useFetchProducts({ids:productIds})
 
 const cartItems = computed(() => {
-  return cartStore.cart.map(item => {
-    const product = products.find(p => p.id === item.productId)
+  return cartStore.items.map(item => {
+    const product = products.value.find(p => p.id === item.productId)
     if (!product) return null
     
     const variant = product.variants.find(v => v.id === item.variantId)
@@ -64,10 +45,9 @@ const cartItems = computed(() => {
 
     if (item.quantity > variant?.stock) {
       item.quantity = variant?.stock
-      handleUpdate(item, item.quantity) 
+      handleUpdate(item, item.quantity)
     }
 
-    
     return {
       productId: product.id,
       productTitle: product.title,
@@ -102,20 +82,21 @@ const total = computed(() => {
 function handleUpdate(item, value) {
     const original = item
     const updates = {
-      ['quantity']: value
+      quantity: value
     }
 
-    updateCartItem(original, updates)
+    updateItem(original.productId, original.variantId, updates)
 }
 
 function handleUpdateShipping(val) {
   const selected = shippingOptions.value.find(opt => opt.value === val);
-  updateShipping({name: selected.value, price: selected.price})
+  setShipping({name: selected.value})
 }
 </script>
 
 <template>
   <div class="container mx-auto p-4 max-w-6xl">
+    {{ loading }}
   <Stepper :active="0" class="my-10"/>
     <!-- Header with cart count -->
     <div class="flex justify-between items-center mb-8">
@@ -146,7 +127,7 @@ function handleUpdateShipping(val) {
                     <h2 class="font-semibold text-lg">{{item.productTitle}}</h2>
                 </div>
                 </div>
-                <button @click="removeFromCart(index)" class="text-red-500 hover:text-red-700 cursor-pointer">
+                <button @click="removeItem(item.productId, item.variantId)" class="text-red-500 hover:text-red-700 cursor-pointer">
                 <TrashIcon class="w-8"/>
                 </button>
             </div>
@@ -252,7 +233,7 @@ function handleUpdateShipping(val) {
                             <span class="font-bold">{{separatePrice(item.totalPrice)}} تومان</span>
                         </td>
                         <td class="py-4 px-4 text-center">
-                            <button @click="removeFromCart(index)" class=" cursor-pointer text-red-500 hover:text-red-700 p-1">
+                            <button @click="removeItem(item.productId, item.variantId)" class=" cursor-pointer text-red-500 hover:text-red-700 p-1">
                                 <TrashIcon class="w-8"/>
                             </button>
                         </td>
@@ -287,7 +268,8 @@ function handleUpdateShipping(val) {
               </div>
               <div class="flex justify-between">
                 <span class="text-gray-600">هزینه ارسال</span>
-                <span class="font-medium">{{separatePrice(shippingCost)}} تومان</span>
+                <span v-if="shippingCost > 0" class="font-medium">{{separatePrice(shippingCost)}} تومان</span>
+                <span v-else class="font-medium">پس کرایه</span>
               </div>
               <div class="border-t pt-3 mt-3">
                 <div class="flex justify-between font-bold text-lg">

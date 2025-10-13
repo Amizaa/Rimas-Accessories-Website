@@ -1,6 +1,6 @@
 <script setup>
 import Logo from '@/public/images/Logo2.png'
-
+import { useCartStore } from "~/store/cart";
 
 import {
   Dialog,
@@ -28,6 +28,13 @@ import SearchBar from './searchBar.vue'
 const categories  = await useFetchCategories()
 
 const mobileMenuOpen = ref(false)
+
+const cartLength = computed(() => {
+  const cartStore = useCartStore()
+  cartStore.loadFromLocal()
+  return cartStore.items?.length ?? 0
+})  
+
 </script>
 
 <template>
@@ -99,7 +106,10 @@ const mobileMenuOpen = ref(false)
         <HeaderLogin />
         <USeparator orientation="vertical" class="h-10" />
         <NuxtLink to="/cart">
-          <ShoppingCart class="text-sm/6 size-7 cursor-pointer hover:fill-blue-600"/>
+          <UChip v-if="cartLength > 0" :text="cartLength" size="3xl" color="secondary">
+            <ShoppingCart class="text-sm/6 size-7 cursor-pointer hover:fill-blue-600"/>
+          </UChip>
+          <ShoppingCart v-else class="text-sm/6 size-7 cursor-pointer hover:fill-blue-600"/>
         </NuxtLink>
       </div>
     </nav>

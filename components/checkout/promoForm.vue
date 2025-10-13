@@ -1,11 +1,14 @@
 <script setup>
+import { useCartStore } from '~/store/cart'
+
   const promoCode = ref('')
   const message = ref('')
 
   const toast = useToast()
 
-  const {applyPromo, updatePromo} = useCart()
-  const promoCookie = useCookie('promo')
+  const { setPromo } = useCartStore()
+  const cartStore = useCartStore()
+  cartStore.loadFromLocal() 
 
   async function promoValidation() {
     const { data, error } = await validateAndApplyPromo(promoCode.value.toUpperCase(), 1)
@@ -27,11 +30,7 @@
         color: 'success'
       })
 
-      if (!promoCookie.value) {
-        applyPromo({id: data.id, title: data.title, discount: data.discount, freeShipping: data.free_shipping})
-      }else{
-        updatePromo({id: data.id, title: data.title, discount: data.discount, freeShipping: data.free_shipping})
-      }
+      setPromo({id: data.id, title: encodeURIComponent(data.title), discount: data.discount, freeShipping: data.free_shipping})
     }
   }
 </script>

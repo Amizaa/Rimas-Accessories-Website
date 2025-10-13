@@ -77,7 +77,7 @@ export function groupSalesByCategory(orders: any[]) {
     .filter(o => o.status === "shipped") // ✅ only shipped orders
     .forEach(order => {
       order.items.forEach((item: any) => {
-        const categoryName = item.product.category.name
+        const categoryName = item.product_category
         const quantity = item.quantity
 
         categoryTotals[categoryName] =

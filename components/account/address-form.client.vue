@@ -18,8 +18,8 @@ const state = reactive({
 });
 
 onMounted(async() => {
-  state.receiverPhone = props.user.phone
-  state.receiverName = `${props.user.first_name} ${props.user.last_name}`
+  state.receiverPhone = props.user?.phone
+  state.receiverName = `${props.user?.first_name} ${props.user?.last_name}`
 })
 
 
