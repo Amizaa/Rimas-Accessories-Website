@@ -126,7 +126,7 @@ async function onSubmit() {
     province: state.province,
     city: state.city,
     postal_code: state.postCode,
-    user: 1,
+    user: props.user.id,
   };
 
   const result = await saveAddress(payload);

@@ -1,8 +1,8 @@
 <script setup>
-const userComposable = useUser(1)   // DO NOT await here
+const {fetchAuthenticatedUser, updateUser} = useUser()   // DO NOT await here
 
 const user = ref('')
-user.value = await userComposable.fetchUser()
+user.value = await fetchAuthenticatedUser()
 
 const addresses = computed(() => user.value?.addresses ?? [])
 
@@ -62,12 +62,12 @@ function validateForm(data) {
     errors.phone = '';
   }
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-    errors.email = 'فرمت ایمیل معتبر نیست';
-    isValid = false;
-    } else {
-    errors.email = '';
-    }
+  if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+  errors.email = 'فرمت ایمیل معتبر نیست';
+  isValid = false;
+  } else {
+  errors.email = '';
+  }
 
 
   return isValid;
@@ -103,7 +103,7 @@ async function submitForm() {
     phone: state.phone,
     email: state.email
   }
-  await userComposable.updateUser(userUpdatedData,user.value?.id)
+  await updateUser(userUpdatedData,user.value?.id)
 
   emit('validated', {
     selectedAddress: selectedAddress.value,
@@ -113,7 +113,7 @@ async function submitForm() {
 defineExpose({ submitForm })
 
 async function refreshUser() {
-  const updatedUser = await userComposable.fetchUser()
+  const updatedUser = await fetchAuthenticatedUser()
   user.value = updatedUser
 
   selectedAddress.value = addresses.value[0]?.id.toString()
@@ -161,7 +161,7 @@ async function refreshUser() {
                     </URadioGroup>        
                 </div>
                 <div class="col-span-6">
-                    <AccountAddressForm @addressAdded="refreshUser"/>
+                    <AccountAddressForm @addressAdded="refreshUser" :user="user"/>
                 </div>
                 
                 <UFormField class="col-span-6" label="توضیحات تکمیلی (اختیاری)" name="description">

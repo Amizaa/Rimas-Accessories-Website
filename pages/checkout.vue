@@ -73,7 +73,6 @@ async function handleSaveOrder(formData) {
       description: formData.description || '',
       items: cartItems.value,
     }
-    console.log(payload);
     
     const result = await saveOrder(payload)
     

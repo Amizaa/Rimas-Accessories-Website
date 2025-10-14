@@ -1,10 +1,8 @@
 <script setup>
 
 const props = defineProps({
-    receiverPhone: String,
-    receiverName: String
+  user:Object
 })
-
 
 const toast = useToast()
 
@@ -15,8 +13,8 @@ const state = reactive({
     province: undefined,
     city:undefined,
     postCode: undefined,
-    receiverPhone: props.receiverPhone,
-    receiverName: props.receiverName,
+    receiverPhone: props.user.phone,
+    receiverName: `${props.user.first_name} ${props.user.last_name}`,
 });
 
 
@@ -122,7 +120,7 @@ async function saveAddressHandler() {
     province: state.province,
     city: state.city,
     postal_code: state.postCode,
-    user: 1,
+    user: props.user.id,
   };
 
   const result = await saveAddress(payload);

@@ -41,8 +41,8 @@
             <div class="my-3  space-y-2">
                 <h4>محصولات سفارش داده شده:</h4>
                 <UCarousel style="direction:ltr" v-slot="{ item }" :items="order.items" :ui="{ item: 'basis-1/3' }">
-                    <img :src="item.product.images[0].url" width="234" height="234" class="rounded-lg mx-auto">
-                    <p class=" text-center mt-2">{{item.product.title}} - {{item.variant.title}}</p>
+                    <img :src="item.image" width="234" height="234" class="rounded-lg mx-auto">
+                    <p class=" text-center mt-2">{{item.product_title}} - {{item.variant_title}}</p>
                 </UCarousel>
             </div>
             <div class="my-3 space-y-2">
@@ -60,8 +60,6 @@
             <div class="mt-8 mb-3 space-y-2 flex justify-center">
                 <button @click="navigateTo(`/my-account/orders/${order.id}`)" class=" text-white p-2 rounded-full cursor-pointer bg-indigo-400 hover:bg-indigo-500 transition-all">مشاهده جزئیات بیشتر</button>
             </div>
-
-
             
         </div>
     </div>

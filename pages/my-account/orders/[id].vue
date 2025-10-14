@@ -74,17 +74,12 @@
                 </div>
                 <USeparator class="mt-4 mb-6"/>
                 <div class="p-2">
-                    <h3 class="text-right font-bold text-lg mb-6">اطلاعات پرداخت</h3>
-                    <ul class=" space-y-2">
-                        <li>جمع کل خرید: <span class="font-bold">{{separatePrice(order.total_amount)}} تومان</span></li>
-                    </ul>
-                </div>
-                <USeparator class="mt-4 mb-6"/>
-                <div class="p-2">
                     <h3 class="text-right font-bold text-lg mb-6">اطلاعات ارسال</h3>
                     <ul class=" space-y-2">
-                        <li>ارسال از طریق: <span class="font-bold">{{order.shipping_method}}</span></li>
-                        <li>کد رهگیری: <span class="font-bold">{{order.tracking_code}}</span></li>
+                        <li>ارسال از طریق: <span class="font-bold">{{order.shipping_method == "post" ? 'پست پیشتاز' : 'تیپاکس' }} </span></li>
+                        <li>هزینه ارسال: <span class="font-bold">{{order.shipping_cost > 0 ? `${separatePrice(parseInt(order.shipping_cost))} تومان` : 'پس کرایه'}}</span></li>
+                        <li v-if="order.status == 'shipped'">تاریخ ارسال: <span class="font-bold">{{formatPersianDate(order.shipped_date)}}</span></li>
+                        <li  v-if="order.status == 'shipped'">کد رهگیری: <span class="font-bold">{{order.tracking_code}}</span></li>
                     </ul>
                 </div>
                 <USeparator class="mt-4 mb-6"/>
@@ -97,23 +92,31 @@
                     <h3 class="text-right font-bold text-lg mb-6">محصولات سفارش داده شده</h3>
                     <div class=" w-full flex gap-3 overflow-hidden items-center justify-start relative mb-2 border p-3 rounded-2xl"  v-for="item in order.items" :key="item.id">
                         <div class="relative w-20 h-20 flex-shrink-0">
-                            <img class="absolute rounded-md left-0 top-0 w-full h-full object-cover object-center transition duration-50" :src="item.product.images[0].url" :alt="`${item.product.title} - ${item.variant.title}`">
+                            <img class="absolute rounded-md left-0 top-0 w-full h-full object-cover object-center transition duration-50" :src="item.image" :alt="`${item.product_title} - ${item.variant_title}`">
                         </div>
                         <ul>
-                            <li>کد محصول: <span class="font-bold">{{item.product.id}}</span></li>
-                            <li>نام محصول: <span class="font-bold">{{item.product.title}}</span></li>
-                            <li>دسته بندی: <span class="font-bold">{{item.product.category.name}}</span></li>
-                            <li>مدل: <span class="font-bold">{{item.variant.title}}</span></li>
+                            <li>نام محصول: <span class="font-bold">{{item.product_title}}</span></li>
+                            <li>دسته بندی: <span class="font-bold">{{item.product_category}}</span></li>
+                            <li>مدل: <span class="font-bold">{{item.variant_title}}</span></li>
                             <li>تعداد: <span class="font-bold">{{item.quantity}}</span></li>
-                            <li>قیمت واحد: <span class="font-bold">{{separatePrice(item.variant.price)}} تومان</span></li>
-                            <li>جمع کل: <span class="font-bold">{{separatePrice(item.variant.price * item.quantity)}} تومان</span></li>
+                            <li>قیمت قبل تخفیف: <span class="font-bold">{{separatePrice(parseInt(item.price))}} تومان</span></li>
+                            <li>قیمت نهایی : <span class="font-bold">{{separatePrice(parseInt(item.price - (item.price * item.discount)/100))}} تومان</span></li>
                         </ul>
                     </div>
                 </div>
-    
+                
+                <USeparator class="mt-4 mb-6"/>
+                <div class="p-2">
+                    <h3 class="text-right font-bold text-lg mb-6">اطلاعات پرداخت</h3>
+                    <ul class=" space-y-2">
+                        <li v-if="order.promo_used.code">کد تخفیف اعمال شده: <span class="font-bold">{{order.promo_used.code}} ( {{ order.promo_used.title }} )</span></li>
+                        <li v-if="order.promo_used.code">درصد کد تخفیف: <span class="font-bold">{{order.promo_used.discount}}%</span></li>
+                        <li>جمع کل خرید: <span class="font-bold">{{separatePrice(order.total_amount)}} تومان</span></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-
-
+    
+    
 </template>

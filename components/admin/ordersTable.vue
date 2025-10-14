@@ -35,7 +35,7 @@ const columns = [
     }   
   },
   {
-    accessorKey: 'userId',
+    accessorKey: 'user.id',
     cell: ({ row }) => {
       const user = row.original.user
       const firstName = user.first_name
@@ -161,7 +161,7 @@ function getRowItems(row) {
     {
       label: 'مشاهده مشتری',
       onSelect() {
-        navigateTo(`customers/${row.original.userId}`)
+        navigateTo(`customers/${row.original.user.id}`)
       }
     },
     {

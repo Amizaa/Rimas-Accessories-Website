@@ -1,4 +1,3 @@
-
 export default defineNuxtRouteMiddleware((to, from) => {
   const access = process.client ? localStorage.getItem("access") : null
 
