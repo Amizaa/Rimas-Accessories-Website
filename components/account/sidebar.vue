@@ -9,12 +9,10 @@
     const router = useRouter()
 
     function logoutUser() {
-
-    localStorage.removeItem("access")
-    localStorage.removeItem("refresh")
-
-
-    router.push("/")
+        useCookie('access').value = null
+        useCookie('refresh').value = null
+        
+        router.push("/")
   }
 </script>
 

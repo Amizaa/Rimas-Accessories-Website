@@ -13,7 +13,7 @@ export function useOrder() {
     loading.value = true
     error.value = null
     try {
-      const token = localStorage.getItem("access")
+      const token = useCookie('access').value
       if (!token) throw new Error("کاربر وارد سیستم نشده است")
 
       const response = await $fetch(`${API_URL}orders/`, {
@@ -37,7 +37,7 @@ export function useOrder() {
     error.value = null
 
     try {
-      const token = localStorage.getItem("access")
+      const token = useCookie('access').value
       if (!token) throw new Error("No access token found")
 
       const response = await $fetch(`${API_URL}orders/${orderId}/`, {
@@ -63,7 +63,7 @@ export function useOrder() {
     error.value = null
 
     try {
-      const token = localStorage.getItem("access")
+      const token = useCookie('access').value
       if (!token) throw new Error("کاربر وارد سیستم نشده است")
 
       const response = await $fetch(`${API_URL}orders/`, {

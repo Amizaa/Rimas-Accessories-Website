@@ -54,7 +54,7 @@ const updateAddress = async (id, payload) => {
   error.value = null
 
   try {
-    const token = localStorage.getItem("access")
+    const token = useCookie('access').value
     if (!token) throw new Error("No access token found")
 
     const { data: updatedData, error: updateError } = await useFetch(`${API_URL}addresses/${id}/`, {

@@ -2,8 +2,12 @@
 import { useCartStore } from "~/store/cart";
 import shippings from '~/api/shipping.json'
 
+  definePageMeta({
+      middleware: 'auth'
+  })
+
   useHead({
-      title: 'بررسی اطلاعات'
+      title: 'بررسی اطلاعات',
   })
 
   const toast = useToast()

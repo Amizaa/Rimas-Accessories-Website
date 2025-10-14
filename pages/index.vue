@@ -10,6 +10,22 @@
     lastProducts.value = await useFetchProducts({lastAdded:true,limit:10})
     necklaceCat.value = await useFetchProducts({category: 'گوشواره'}) 
     discountedProducts.value = await useFetchProducts({hasDiscount: true})
+
+
+    const toast = useToast()
+    const route = useRoute()
+
+    onMounted(() => {
+        if (route.query.authError === "login-required") {
+            toast.add({
+            title: 'خطا',
+            description: 'ابتدا وارد حساب کاربری خود شوید',
+            color: 'error'
+            })
+            // حذف query از آدرس (برای جلوگیری از نمایش دوباره)
+            navigateTo('/', { replace: true })
+        }
+    })
 </script>
 
 <template>

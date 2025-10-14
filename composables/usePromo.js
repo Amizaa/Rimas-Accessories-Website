@@ -11,7 +11,7 @@ export default function usePromo() {
     loading.value = true
     error.value = null
     try {
-      const token = localStorage.getItem("access")
+      const token = useCookie('access').value
       if (!token) throw new Error("No access token found")
 
       // $fetch returns the response body directly (no .value wrapper like useFetch)

@@ -9,7 +9,7 @@ export function useAdmin() {
 
   // ✅ Helper: always include token
   const authHeaders = () => {
-    const token = process.client ? localStorage.getItem("access") : null
+    const token = process.client ? useCookie('access').value : null
     if (!token) throw new Error("No access token found")
     return {
       Authorization: `Bearer ${token}`,
@@ -141,7 +141,7 @@ const deleteItem = async (resource, id) => {
     const order = ref(null)
 
     try {
-      const token = localStorage.getItem("access")
+      const token = useCookie('access').value
       if (!token) throw new Error("No access token found")
 
       const response = await $fetch(`${API_URL}orders/${orderId}/`, {
@@ -193,7 +193,7 @@ const deleteItem = async (resource, id) => {
     const promos = ref(null)
 
     try {
-      const token = localStorage.getItem("access")
+      const token = useCookie('access').value
       if (!token) throw new Error("No access token found")
 
       const response = await $fetch(`${API_URL}promo-users/?user_id=${userId}`, {
