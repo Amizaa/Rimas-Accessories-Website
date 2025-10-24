@@ -47,7 +47,7 @@ const addUserPromo = async () => {
 
   const payload = {
     user: user.value.id,
-    promo: selectedCode.value.value
+    promo_id: selectedCode.value.value
   }
 
   const response = await createItem('promo-users',payload)

@@ -31,7 +31,8 @@ const errors = reactive({
   firstname: '',
   lastname: '',
   email: '',
-  phone: ''
+  phone: '',
+  address: ''
 });
 
 
@@ -67,6 +68,13 @@ function validateForm(data) {
   isValid = false;
   } else {
   errors.email = '';
+  }
+
+  if (!selectedAddress.value) {
+  errors.address = 'لطفا آدرس خود را وارد کنید';
+  isValid = false;
+  } else {
+  errors.address = '';
   }
 
 
@@ -163,6 +171,8 @@ async function refreshUser() {
                 <div class="col-span-6">
                     <AccountAddressForm @addressAdded="refreshUser" :user="user"/>
                 </div>
+                <span class="text-red-500 text-sm col-span-6">{{ errors.address }}</span>
+
                 
                 <UFormField class="col-span-6" label="توضیحات تکمیلی (اختیاری)" name="description">
                     <UTextarea class="w-full" placeholder="هر توضیحی که در رابطه با سفارش مورد نیاز است را در اینجا بیان کنید" v-model="state.description"/>

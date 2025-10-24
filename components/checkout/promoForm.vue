@@ -2,7 +2,6 @@
 import { useCartStore } from '~/store/cart'
 
   const promoCode = ref('')
-  const message = ref('')
 
   const toast = useToast()
 
@@ -22,11 +21,10 @@ import { useCartStore } from '~/store/cart'
       })
 
     } else {
-      message.value = `${data.title} برای شما اعمال شد`
 
       toast.add({
         title: 'اعمال کد تخفیف',
-        description: `${data.title} برای شما اعمال شد`,
+        description: `تخفیف ${data.title} برای شما اعمال شد`,
         color: 'success'
       })
 

@@ -24,7 +24,7 @@ import { ChevronDownIcon} from '@heroicons/vue/20/solid'
 const items = [
     {name: 'داشبورد', href:'/admin/dashboard'},
     {name: 'مشتری ها', href:'/admin/customers'},
-    {name: 'سفارش ها', href: '/admin/orders',badge: 6},
+    {name: 'سفارش ها', href: '/admin/orders'},
     {name: 'محصولات', href: '/admin/products'},
     {name: 'دسته بندی ها', href: '/admin/categories'},
     {name: 'بلاگ', href: '/admin/blog'},
