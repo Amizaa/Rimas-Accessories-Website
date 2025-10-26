@@ -169,7 +169,13 @@ const deleteItem = async (resource, id) => {
     error.value = null
     try {
       const formData = new FormData()
-      files.forEach(file => formData.append("images", file))
+      files.forEach(file => {
+        formData.append("images", file.image)
+        formData.append("is_primary", file.is_primary)
+      })
+
+      console.log(formData.values);
+      console.log(files);
 
       const headers = authHeaders()
 

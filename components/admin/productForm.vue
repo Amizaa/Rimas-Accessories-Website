@@ -10,6 +10,7 @@ const schema = ref(null);
 const variants = ref([])
 variants.value.push({ id: Date.now(), data: { title: '', price: '', stock: '' } })
 const images = ref([])
+const primaryImage = ref('')
 const previewImages = ref([])
 
 const state = reactive({
@@ -89,14 +90,31 @@ async function onSubmit(event) {
   let response = ''
   if (props.edit) {
     response = await updateItem('products', props.product.product_id, payload)
-    if (response.success && images.value.length > 0) {
-      response = await uploadImages("products", response.data.id, images.value)
+    if (response.success && (images.value.length > 0 || primaryImage.value)) {
+      let files = images.value.map((image) => {
+        return {
+          image: image,
+          is_primary: false
+        }
+      })
+  
+      files.push({image: primaryImage.value , is_primary: true})
+      response = await uploadImages("products", response.data.id, files)
     }
   } else {
     response =  await createItem('products', payload)
-    if (response.success && images.value.length > 0) {
-      response = await uploadImages("products", response.data.id, images.value)
+    if (response.success && (images.value.length > 0 || primaryImage.value)) {
+      let files = images.value.map((image) => {
+        return {
+          image: image,
+          is_primary: false
+        }
+      })
+  
+      files.push({image: primaryImage.value , is_primary: true})
+      response = await uploadImages("products", response.data.id, files)
     }
+
   }
 
   
@@ -168,19 +186,31 @@ async function deleteImage(id,idx) {
       @click="addVariant"
       >
       + افزودن نوع جدید
-      </UButton>
-    </div>
-
-    <USeparator class=" col-span-2" />
-    <div class="col-span-2">
-      <h1 class="text-xl font-azarmehrbold text-green-500 text-center my-5">تصاویر محصول</h1>
-      <div class="flex justify-center">
-        <UFileUpload
-          v-model="images"
-          layout="grid"
+    </UButton>
+  </div>
+  
+  <USeparator class=" col-span-2" />
+  <div class="col-span-2">
+    <h1 class="text-xl font-azarmehrbold text-green-500 text-center my-5">تصاویر محصول</h1>
+    <div class="flex justify-center gap-4">
+      <UFileUpload
+        v-model="primaryImage"
+        layout="grid"
+        position="outside"
+        label="آپلود تصویر اصلی محصول"
+        description="SVG, PNG, JPG or GIF"
+        class="w-96"
+        :ui="{
+          base: 'min-h-48 border-2 border-dashed border-gray-300 bg-white hover:bg-gray-50 cuersor-pointer',
+          content: 'flex flex-col items-center justify-center p-5',
+        }"
+      />
+      <UFileUpload
+      v-model="images"
+      layout="grid"
           position="outside"
           multiple
-          label="آپلود تصاویر محصول"
+          label="آپلود تصاویر دیگر محصول"
           description="SVG, PNG, JPG or GIF"
           class="w-96"
           :ui="{
@@ -192,13 +222,15 @@ async function deleteImage(id,idx) {
 
       <div v-if="edit" class="grid grid-cols-3 gap-3 mt-4">
         <div v-for="(img, idx) in previewImages" :key="idx" class="relative">
-            <img :src="img.url" alt="تصویر محصول" class="object-cover rounded" />
+            <img :src="img.url" alt="تصویر محصول" :class="['object-cover rounded',  img.is_primary ? ' border-green-600 border-4' : 'border-0']" />
             <button
             type="button"
             class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
             @click="deleteImage(img.id,idx)"
             title="حذف تصویر"
               >×</button>
+            <p v-if="img.is_primary" class=" w-full text-center text-green-600">تصویر اصلی</p>
+
           </div>
       </div>
     </div>
