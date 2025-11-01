@@ -25,7 +25,7 @@ import { ChevronDownIcon} from '@heroicons/vue/20/solid'
 import ShoppingCart from '~/assets/images/shopping_cart.svg'
 import SearchBar from './searchBar.vue'
 
-const categories  = await useFetchCategories()
+const categories = inject('categories')
 
 const mobileMenuOpen = ref(false)
 

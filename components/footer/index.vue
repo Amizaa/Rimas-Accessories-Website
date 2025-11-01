@@ -1,43 +1,29 @@
 <script setup>
-const categories = ref([
-  { name: 'گوشواره', href: '#' },
-  { name: 'گردنبند', href: '#'},
-  { name: 'دستبند', href: '#' },
-  { name: 'پابند', href: '#' },
-  { name: 'ست', href: '#'},
-]);
+const categories = inject('categories').map(cat => ({
+  name: cat.name,
+  href: `/category/${cat.name}`
+}))
 
 const quickLinks = ref([
     {name: 'صفحه اصلی', href: '/'},
-    {name: 'وبلاگ', href: '/'},
+    {name: 'وبلاگ', href: '/blog'},
     {name: 'پیشنهادات', href: '/'},
-    {name: 'درباره ما', href: '/'},
-    {name: 'تماس با ما', href: '/'},
+    {name: 'درباره ما', href: '/about-us'},
+    {name: 'تماس با ما', href: '/contact-us'},
 ]);
 
-const lastBlogs = ref([
-  {
-    href: '/',
-    name: "چگونه اکسسوری مناسب استایل خود را انتخاب کنیم؟"
-  },
-  {
-    href: '/',
-    name: "5 ترند محبوب اکسسوری در سال 2025"
-  },
-  {
-    href: '/',
-    name: "نکاتی برای نگهداری از زیورآلات نقره"
-  },
-  {
-    href: '/',
-    name: "ترکیب رنگ اکسسوری‌ها با لباس‌های تابستانی"
-  },
-  {
-    href: '/',
-    name: "فرق بین زیورآلات دست‌ساز و صنعتی"
-  }
- 
-]);
+  const {fetchPosts} = usePosts()
+  const posts = ref('')
+  posts.value = await fetchPosts()
+
+  const newestPosts = posts.value
+  .sort((a, b) => new Date(b.published_at) - new Date(a.published_at))
+  .slice(0, 5); 
+
+const lastBlogs = newestPosts.map(post => ({
+  name: post.title,
+  href: `/blog/${post.slug}`
+}))
 </script>
 
 <template>

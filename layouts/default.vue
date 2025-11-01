@@ -7,3 +7,9 @@
     </div>
     <Footer />
 </template>
+
+<script setup>
+const categories  = await useFetchCategories()
+
+provide('categories', categories)   
+</script>
