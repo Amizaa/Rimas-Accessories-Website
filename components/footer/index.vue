@@ -12,15 +12,8 @@ const quickLinks = ref([
     {name: 'تماس با ما', href: '/contact-us'},
 ]);
 
-  const {fetchPosts} = usePosts()
-  const posts = ref('')
-  posts.value = await fetchPosts()
 
-  const newestPosts = posts.value
-  .sort((a, b) => new Date(b.published_at) - new Date(a.published_at))
-  .slice(0, 5); 
-
-const lastBlogs = newestPosts.map(post => ({
+const lastBlogs = inject('posts').map(post => ({
   name: post.title,
   href: `/blog/${post.slug}`
 }))

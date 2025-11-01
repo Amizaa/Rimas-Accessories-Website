@@ -1,10 +1,8 @@
 <script setup>
 const props = defineProps({
   category: String,
+  productTitle: String,
 })
-
-const route = useRoute()
-const product = route.params.name
 
 let items = [   
     {
@@ -16,8 +14,8 @@ let items = [
       to: `/category/${props.category}`
     },
     {
-      label: `${product}`,
-      to: `/product/${product}`
+      label: `${props.productTitle}`,
+      to: `/product/${props.productTitle}`
     },
 ]
 

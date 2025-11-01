@@ -51,7 +51,7 @@ const cartItems = computed(() => {
     return {
       productId: product.id,
       productTitle: product.title,
-      image: product.images[0].url,
+      image: product.images.find(img => img.is_primary)?.url ?? product.images[0].url,
       variantId: variant?.id || null,
       variantTitle: variant?.title || "Default",
       quantity: item.quantity,
