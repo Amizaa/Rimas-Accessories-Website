@@ -14,6 +14,12 @@
       return firstPrice.value * (1 - props.item.discount / 100)
     })
 
+    const isExist = computed(() => {
+        return props.item.variants.reduce((sum, variant) => {
+          return sum + (variant.stock || 0)
+        }, 0) != 0
+    })
+
     const itemImage = computed(() => {
       const images = props.item?.images || []
       if (!images.length) return Logo
@@ -27,7 +33,7 @@
 
 
 <template>
-    <div style="direction:rtl" class="bg-white text-right rounded-2xl shadow-xl group overflow-hidden transition-transform duration-300 hover:translate-y-[-10px] cursor-pointer mb-4">
+  <div style="direction:rtl" class="bg-white text-right rounded-2xl shadow-xl group overflow-hidden transition-transform duration-300 hover:translate-y-[-10px] cursor-pointer mb-4">
       <NuxtLink :to="`/product/${item.id}`">
         <div class="h-48 w-full overflow-hidden relative">
           <img class="h-full w-full object-cover transform overflow-hidden transition-transform duration-[300ms] group-hover:scale-125 object-end" :src="itemImage" :alt="item.title" />
@@ -42,11 +48,16 @@
                 </p> 
             
           
-              <div class="mt-4 flex items-center justify-center gap-1">
+              <div v-if="isExist" class="mt-4 flex items-center justify-center gap-1">
                 <span v-if="item.discount" class=" text-gray-500 group-hover:text-white text-xs md:text-sm line-through mx-2">{{ separatePrice(firstPrice) }}</span>
                 <span class=" text-gray-700 group-hover:text-white text-sm md:text-base">{{ separatePrice(actualPrice) }}</span>
                 <span class=" text-gray-700 group-hover:text-white text-sm md:text-base">تومان</span>
               </div>
+
+              <div v-else class="mt-4 flex items-center justify-center gap-1">
+                <span class=" text-red-700 group-hover:text-white text-sm md:text-base">ناموجود</span>
+              </div>
+              
           </div>
         </NuxtLink>
 
