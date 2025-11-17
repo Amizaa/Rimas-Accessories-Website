@@ -1,13 +1,15 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import Logo from '@/public/images/Logo.png'
+import earings from "@/assets/images/slider/earings.jpg";
+import bracelet from "@/assets/images/slider/bracelet.jpg";
+import necklace from "@/assets/images/slider/necklace.jpg";
+import set from "@/assets/images/slider/set.jpg";
 
 const items = [
-  { title: 'گوشواره', description: 'زیباترین گوشواره ها', href: '#', image: Logo},
-  { title: 'گردنبند', description: 'با گردنبد های ما شیک شوید', href: '#', image: Logo },
-  { title: 'دستبند', description: 'مناسب دست های ظریف شما', href: '#', image: Logo},
-  { title: 'پابند', description: 'اصیل و زیبا بمانید', href: '#', image: Logo},
-  { title: 'ست', description: 'برای پارتنر های عاشق', href: '#', image: Logo},
+  { title: 'گوشواره', description: 'زیباترین گوشواره ها', href: '/category/گوشواره', image: earings},
+  { title: 'گردنبند', description: 'با گردنبد های ما شیک شوید', href: '/category/گردنبند', image: necklace },
+  { title: 'دستبند', description: 'مناسب دست های ظریف شما', href: '/category/دستبند', image: bracelet},
+  { title: 'ست', description: 'برای پارتنر های عاشق', href: '/category/ست', image: set},
 
 ]
 
@@ -34,7 +36,7 @@ const items = [
         <div class="max-w-lg float-animation text-center">
           <h2 class=" text-center text-4xl md:text-7xl font-bold leading-none bg-gradient-to-r from-white to-neutral-400 bg-clip-text text-transparent py-3">{{ item.title }}</h2>
           <p class="md:mt-6 text-neutral-400 text-lg leading-relaxed">{{ item.description }}</p>
-          <button class=" cursor-pointer mt-2 md:mt-8 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full text-sm font-medium transition-all duration-300 hover:tracking-wider">مشاهده {{item.title}} ها</button>
+          <button @click="navigateTo(item.href)" class=" cursor-pointer mt-2 md:mt-8 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full text-sm font-medium transition-all duration-300 hover:tracking-wider">مشاهده {{item.title}} ها</button>
         </div>
       </div>
     </section>
