@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 definePageMeta({
     layout:'admin',
     middleware: 'auth-admin'
@@ -10,8 +10,8 @@ useHead({
 
 const {fetchAll} = useAdmin()
 const orders = ref()
-orders.value = await fetchAll('orders')
-console.log(orders.value);
+const ordersResponse = await fetchAll('orders')
+orders.value = ordersResponse.results
 
 
 const pendingOrders = orders.value

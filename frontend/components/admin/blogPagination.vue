@@ -5,7 +5,9 @@
 
     const {fetchAll} = useAdmin()
     const posts = ref([])
-    posts.value = await fetchAll('blog-posts')
+
+    const postResponse = await fetchAll('blog-posts')
+    posts.value = postResponse.results
 
     // Slice products based on current page
     const paginatedPosts = computed(() => {

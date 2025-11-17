@@ -19,21 +19,52 @@ export function useAdmin() {
   // ------------------------
   // 📌 Fetch generic resource
   // ------------------------
-  const fetchAll = async (resource) => {
-    loading.value = true
-    error.value = null
-    try {
-      const data = await $fetch(`${API_URL}${resource}/`, {
-        headers: authHeaders(),
-      })
-      return data
-    } catch (err) {
-      error.value = err
-      return []
-    } finally {
-      loading.value = false
+const fetchAll = async (resource, params = {}) => {
+  loading.value = true
+  error.value = null
+  try {
+    let url = `${API_URL}${resource}/`
+
+    if (resource === "products" && Object.keys(params).length > 0) {
+      const query = new URLSearchParams(params).toString()
+      url = `${API_URL}${resource}/?${query}`
     }
+
+    const data = await $fetch(url, {
+      headers: authHeaders(),
+    })
+
+    // ✅ Products → paginated object
+    if (resource === "products" && data && typeof data === "object" && "results" in data) {
+      return {
+        results: data.results || [],
+        count: data.count || 0,
+        next: data.next || null,
+        previous: data.previous || null,
+      }
+    }
+
+    // ✅ Categories (or other non-paginated) → plain array
+    if (Array.isArray(data)) {
+      return {
+        results: data,
+        count: data.length,
+        next: null,
+        previous: null,
+      }
+    }
+
+    // fallback
+    return { results: [], count: 0, next: null, previous: null }
+  } catch (err) {
+    error.value = err
+    return { results: [], count: 0, next: null, previous: null }
+  } finally {
+    loading.value = false
   }
+}
+
+
 
   const fetchById = async (resource,id) => {
     loading.value = true

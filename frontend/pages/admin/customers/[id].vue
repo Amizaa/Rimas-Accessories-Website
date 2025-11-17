@@ -15,7 +15,8 @@ const userPromos = ref()
 user.value = await fetchById('users',id)
 userOrders.value = await fetchUserOrders(user.value.id)
 userPromos.value = await fetchUserPromos(user.value.id)
-promos.value = await fetchAll('promos')
+const codesResponse = await fetchAll('promos')
+promos.value = codesResponse.results
 
 const unlinkedPrivatePromos = promos.value.filter((promo) => {
   if (!promo.is_global && promo.status === 'active') {

@@ -10,7 +10,9 @@ definePageMeta({
 
 const {fetchAll} = useAdmin()
 const userData = ref()
-userData.value = await fetchAll('users')
+
+const userResponse = await fetchAll('users')
+userData.value = userResponse.results
 
 const users = userData.value.map(user => ({
   label: user.first_name && user.last_name ? `${user.first_name} ${user.last_name}` : ' ',

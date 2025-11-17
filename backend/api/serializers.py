@@ -21,9 +21,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 # --- CATEGORY & PRODUCTS ---
 class CategorySerializer(serializers.ModelSerializer):
+    product_count = serializers.SerializerMethodField()
     class Meta:
         model = Category
         fields = '__all__'
+        
+    def get_product_count(self, obj):
+        return obj.products.count()
 
 
 class ProductVariantSerializer(serializers.ModelSerializer):
@@ -57,7 +61,8 @@ class ProductSerializer(serializers.ModelSerializer):
         source='category',
         write_only=True
     )
-    price = serializers.SerializerMethodField()  # 👈 اضافه شد
+    price = serializers.SerializerMethodField()  
+    stock_status = serializers.SerializerMethodField()  
 
     class Meta:
         model = Product
@@ -65,13 +70,14 @@ class ProductSerializer(serializers.ModelSerializer):
             'id',
             'title',
             'features',
-            'price',          # 👈 کمترین قیمت Variant (قبل از تخفیف)
+            'price',          
             'category',
             'category_id',
             'images',
             'discount',
             'add_date',
             'variants',
+            'stock_status'
         ]
 
     def get_price(self, obj):
@@ -83,6 +89,9 @@ class ProductSerializer(serializers.ModelSerializer):
             return None
         min_price = variants.order_by('price').first().price
         return float(min_price)
+    
+    def get_stock_status(self, obj):
+        return obj.variants.filter(stock__gt=0).exists()
 
     def create(self, validated_data):
         variants_data = validated_data.pop('variants', [])

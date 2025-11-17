@@ -2,7 +2,8 @@
 
 const {fetchAll} = useAdmin()
 const codes = ref()
-codes.value = await fetchAll('promos')
+const codesResponse = await fetchAll('promos')
+codes.value = codesResponse.results
 
 
 import { h, resolveComponent } from 'vue'

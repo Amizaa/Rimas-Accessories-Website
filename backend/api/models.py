@@ -81,6 +81,9 @@ class Product(models.Model):
     def __str__(self):
         return self.title
     
+    class Meta:
+        ordering = ["-add_date"] 
+    
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="images")
     url = models.ImageField(upload_to="products/")

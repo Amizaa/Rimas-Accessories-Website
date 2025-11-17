@@ -9,10 +9,17 @@ from django.contrib.auth import logout
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.pagination import PageNumberPagination
 import random
 from kavenegar import *
 
 api = KavenegarAPI('7A556D594937354F6B6F38773267496845634456487671663254786B3956627258326F564B5935625162343D')
+
+
+class TenPerPagePagination(PageNumberPagination):
+    page_size = 12
+    page_size_query_param = "page_size"  
+    max_page_size = 100
 
 # --- USER & ADDRESS ---
 class UserViewSet(viewsets.ModelViewSet):
@@ -32,15 +39,18 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 
 from django.db.models import Min, F, ExpressionWrapper, DecimalField
+from django.db.models import Case, When, BooleanField
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-
+    pagination_class = TenPerPagePagination
+    
 
     def get_queryset(self):
         """
-        Override to filter by category or search query via query params.
+        Override to filter by category, search, price range, discount, ids,
+        and apply sorting with stock handling.
         """
         queryset = super().get_queryset()
         category_slug = self.request.query_params.get('category')
@@ -49,36 +59,59 @@ class ProductViewSet(viewsets.ModelViewSet):
         max_price = self.request.query_params.get('maxPrice')
         has_discount = self.request.query_params.get('hasDiscount')
         ids = self.request.query_params.get('ids')
+        sort_by = self.request.query_params.get('sortBy')
 
+        # Filter by category
         if category_slug:
-            # Correct lookup via ForeignKey
-           queryset = queryset.filter(category__slug=category_slug)
+            queryset = queryset.filter(category__slug=category_slug)
 
+        # Filter by search
         if search:
             queryset = queryset.filter(title__icontains=search)
-            
+
+        # Annotate discounted price
         discounted_price = ExpressionWrapper(
             F('variants__price') - (F('variants__price') * F('discount') / 100),
             output_field=DecimalField(max_digits=10, decimal_places=2)
         )
-
         queryset = queryset.annotate(final_price=Min(discounted_price))
-            
+
+        # Price filters
         if min_price:
-            queryset = queryset.annotate(final_price=discounted_price).filter(final_price__gte=min_price)
-            
+            queryset = queryset.filter(final_price__gte=min_price)
         if max_price:
-            queryset = queryset.annotate(final_price=discounted_price).filter(final_price__lte=max_price)
-            
+            queryset = queryset.filter(final_price__lte=max_price)
+
+        # Discount filter
         if has_discount and has_discount.lower() in ['1', 'true', 'yes']:
             queryset = queryset.filter(discount__gt=0)
-            
+
+        # Filter by IDs
         if ids:
-            # split "1,5,7" → [1,5,7]
             ids_list = [int(pk) for pk in ids.split(",") if pk.isdigit()]
             queryset = queryset.filter(id__in=ids_list)
 
+        # Annotate stock presence
+        queryset = queryset.annotate(
+            has_stock=Case(
+                When(variants__stock__gt=0, then=True),
+                default=False,
+                output_field=BooleanField()
+            )
+        )
+        
+        # Sorting logic
+        if sort_by == "date-desc":
+            queryset = queryset.order_by(F('has_stock').desc(), F('add_date').desc())
+        elif sort_by == "price-asc":
+            queryset = queryset.order_by(F('has_stock').desc(), F('final_price').asc())
+        elif sort_by == "price-desc":
+            queryset = queryset.order_by(F('has_stock').desc(), F('final_price').desc())
+        else:
+            queryset = queryset.order_by(F('has_stock').desc(), F('add_date').desc())
+
         return queryset
+
 
     @action(detail=False, methods=['get'], url_path='last-added')
     def last_added(self, request):
@@ -145,7 +178,7 @@ class BlogImageViewSet(viewsets.ModelViewSet):
     serializer_class = BlogImageSerializer
     
 class BlogPostViewSet(viewsets.ModelViewSet):
-    queryset = BlogPost.objects.all()
+    queryset = BlogPost.objects.all().order_by("-published_at")
     serializer_class = BlogPostSerializer
     
     @action(detail=True, methods=["post"], url_path="upload-images")

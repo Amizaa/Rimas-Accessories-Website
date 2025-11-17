@@ -3,16 +3,9 @@
 const {fetchAll} = useAdmin()
 const products = ref()
 const categories = ref()
-categories.value = await fetchAll('categories')
-products.value = await fetchAll('products')
 
-categories.value = categories.value.map(category => {
-  const count = products.value.filter(product => product?.category?.name === category?.name).length
-  return {
-    ...category,
-    productCount: count
-  }
-})
+const categoryResponse = await fetchAll('categories')
+categories.value = categoryResponse.results
 
 import { h, resolveComponent } from 'vue'
 
@@ -70,9 +63,9 @@ const columns = [
     cell: ({ row }) => row.getValue('slug')
   },
   {
-    accessorKey: 'productCount',
+    accessorKey: 'product_count',
     cell: ({ row }) => {
-      const count = row.getValue('productCount')
+      const count = row.getValue('product_count')
       return count > 0 ? `${count}` : 'بدون محصول ثبت شده'
     },
     header: ({ column }) => {

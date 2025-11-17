@@ -8,7 +8,7 @@
     const lastProducts = ref([])
     const discountedProducts = ref([])
     lastProducts.value = await useFetchProducts({lastAdded:true,limit:10})
-    necklaceCat.value = await useFetchProducts({category: 'گوشواره'}) 
+    necklaceCat.value = await useFetchProducts({category: 'گردنبند'})
     discountedProducts.value = await useFetchProducts({hasDiscount: true})
 
 
@@ -31,11 +31,11 @@
 <template>
     <CarouselStyle1 class="w-full mx-0"/>
 
-    <SectionSlider title="محصولات جدید" :items="lastProducts"/>
+    <SectionSlider title="محصولات جدید" :items="lastProducts.results"/>
 
-    <SectionSlider title="تخفیف ها" :items="discountedProducts"/>
+    <SectionSlider title="تخفیف ها" :items="discountedProducts.results"/>
 
-    <SectionSlider title="گوشواره ها" :items="necklaceCat"/>
+    <SectionSlider title="گردنبند ها" :items="necklaceCat.results"/>
 
     <div class=" bg-gradient-to-t from-zinc-50 to-zinc-300 my-20 p-4">
         <h1 class="text-center text-3xl mb-7 font-bold">سوالات متداول</h1>

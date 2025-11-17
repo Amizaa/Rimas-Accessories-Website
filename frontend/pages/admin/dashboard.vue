@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ShoppingCartIcon, TruckIcon, UserIcon } from '@heroicons/vue/20/solid';
 import { separatePrice } from 'price-seprator';
+import { ref} from "vue";
 
 definePageMeta({
   layout:'admin',
@@ -14,8 +15,12 @@ useHead({
 const {fetchAll} = useAdmin()
 const orders = ref()
 const users = ref()
-users.value = await fetchAll('users')
-orders.value = await fetchAll('orders')
+
+const userResponse = await fetchAll('users')
+users.value = userResponse.results
+
+const orderResponse = await fetchAll('orders') 
+orders.value = orderResponse.results
 
 const { dailyData, weeklyData, monthlyData, yearlyData } = groupSales(orders.value) 
 

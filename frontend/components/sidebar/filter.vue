@@ -1,13 +1,12 @@
 <script setup>
 import { separatePrice } from 'price-seprator'
 
-const categories = await useFetchCategories()
+const categories = inject('categories')
 
 const route = useRoute()
 
 const value = ref([25000,2000000])
  
-const search = route.query.search
 const minPrice = route.query.minPrice;
 const maxPrice = route.query.maxPrice; 
 const category = route.params.category
@@ -32,9 +31,20 @@ watch([minInput, maxInput], ([min, max]) => {
   ]
 })
 
-const link = computed(() => {
-  return search ? `/category/${category}?search=${search}&minPrice=${value.value[0]}&maxPrice=${value.value[1]}` : `/category/${category}?minPrice=${value.value[0]}&maxPrice=${value.value[1]}`
-})
+const submitFilter = () => {
+  const params = new URLSearchParams()
+  
+  if (route.query.search) params.append('search', route.query.search)
+  if (route.query.sortBy) params.append('sortBy', route.query.sortBy)
+  params.append('minPrice', value.value[0])
+  params.append('maxPrice', value.value[1])
+
+  const fullUrl = `/category/${category}?${params.toString()}`
+  navigateTo(fullUrl)
+
+
+}
+
 </script>
 
 
@@ -66,7 +76,7 @@ const link = computed(() => {
                             <UInput v-model="minInput" />
                         </div>
                     </div>
-                    <button @click="navigateTo(link)" class=" cursor-pointer p-2 rounded-full  text-center bg-indigo-400 hover:bg-indigo-500 text-white transition-all duration-300">اعمال</button>
+                    <button @click="submitFilter" class=" cursor-pointer p-2 rounded-full  text-center bg-indigo-400 hover:bg-indigo-500 text-white transition-all duration-300">اعمال</button>
 
                 </div>
 
