@@ -8,13 +8,9 @@ from django.db.models import F, ExpressionWrapper, DecimalField
 from django.contrib.auth import logout
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.pagination import PageNumberPagination
 import random
 from kavenegar import *
-
-api = KavenegarAPI('7A556D594937354F6B6F38773267496845634456487671663254786B3956627258326F564B5935625162343D')
-
 
 class TenPerPagePagination(PageNumberPagination):
     page_size = 12
@@ -380,28 +376,28 @@ class OrderItemViewSet(viewsets.ModelViewSet):
 #                 "phone": user.phone,
 #             }
 #         })
-        
+
+import random
+from django.core.cache import cache
+from rest_framework_simplejwt.tokens import RefreshToken
+
 class RequestOTPView(APIView):
     def post(self, request):
         phone = request.data.get("phone")
         if not phone:
             return Response({"error": "Phone number is required"}, status=400)
+
+        otp_code = str(random.randint(100000, 999999))
         
+        print(otp_code)
 
-        # Generate random 6-digit OTP
-        code = str(random.randint(100000, 999999))
-        print(code)
-        
-        params = { 'sender' : '2000660110', 'receptor': phone , 'message' : f'<<ریماس اکسسوری>> \n کد تایید شما \n\n code: {code}' }
-        # response = api.sms_send(params)
+        # Store OTP in cache (phone → code)
+        cache.set(phone, otp_code, timeout=120) 
 
-        # Save OTP
-        OTP.objects.create(phone=phone, code=code)
-
+        print(cache.get(phone))
         return Response({"message": "OTP sent successfully"})
 
 
-# Step 2: Verify OTP
 class VerifyOTPView(APIView):
     def post(self, request):
         phone = request.data.get("phone")
@@ -410,18 +406,15 @@ class VerifyOTPView(APIView):
         if not phone or not code:
             return Response({"error": "Phone and code are required"}, status=400)
 
-        # Get latest OTP for this phone
-        otp = OTP.objects.filter(phone=phone, code=code).order_by("-created_at").first()
-        if not otp:
-            return Response({"error": "Invalid code"}, status=400)
+        cached_code = int(cache.get(phone))
+        
+        if not cached_code or cached_code != code:
+            return Response({"error": "Invalid or expired code"}, status=400)
 
-        if otp.is_expired():
-            return Response({"error": "Code expired"}, status=400)
-
-        # Get or create user
+        # OTP is valid → create user if needed
         user, created = User.objects.get_or_create(phone=phone)
 
-        # Generate JWT tokens
+        # Generate JWT
         refresh = RefreshToken.for_user(user)
         return Response({
             "refresh": str(refresh),
@@ -429,6 +422,7 @@ class VerifyOTPView(APIView):
             "user": {
                 "id": user.id,
                 "phone": user.phone,
+                "is_staff": user.is_staff
             }
         })
 

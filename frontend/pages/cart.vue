@@ -26,7 +26,8 @@ const products =  ref([])
 onMounted(async () => {
   cartStore.loadFromLocal()  // فقط در client
   const productIds = [...new Set(cartStore.items.map(item => item.productId))].join(',')
-  products.value = await useFetchProducts({ ids: productIds })
+  const productResponse = await useFetchProducts({ ids: productIds })
+  products.value = productResponse.results
 })
 
 const shippingOption = computed(() => cartStore.shipping_method?.name || '')

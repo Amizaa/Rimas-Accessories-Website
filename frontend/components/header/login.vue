@@ -95,7 +95,12 @@ const login = async () => {
   if (loggedInUser) {
     codeError.value = false
     user.value = loggedInUser
-    navigateTo("/my-account/profile")
+
+    if (user.value.is_staff) {
+      navigateTo("/admin/dashboard")
+    }else{
+      navigateTo("/my-account/profile")
+    }
   } else {
     codeError.value = true
   }

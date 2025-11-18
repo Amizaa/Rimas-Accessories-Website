@@ -9,7 +9,7 @@ const category = computed(() =>
 )
 
 const products = ref([])
-const itemsPerPage = ref(3)
+const itemsPerPage = ref(12)
 const totalItems = ref(0)
 const page = ref(Number(route.query.page) || 1)
 
